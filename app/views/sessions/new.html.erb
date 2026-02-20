@@ -36,13 +36,7 @@
     ) %>
   </div>
 
-  <% if alert = flash[:alert] %>
-    <div class="banner banner--danger"><%= alert %></div>
-  <% end %>
-
-  <% if notice = flash[:notice] %>
-    <div class="banner banner--success"><%= notice %></div>
-  <% end %>
+  <%= render "shared/banners" %>
 
   <div>
     <%= form.button "sign in", type: :submit, class: "btn btn--primary" %>
