@@ -1,0 +1,3 @@
+test_owner_primary_account:
+  sink: primary_account
+  user: test_owner
