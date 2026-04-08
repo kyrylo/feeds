@@ -2,5 +2,6 @@
 
 test_owner:
   account: primary_account
+  nickname: Test Owner
   email_address: test_owner@example.test
   password_digest: <%= password_digest %>
