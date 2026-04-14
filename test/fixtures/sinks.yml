@@ -1,3 +1,4 @@
 primary_account:
+  account: primary_account
   name: primary_account
   token: synthetic-owner-feed-token
