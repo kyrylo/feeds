@@ -25,8 +25,8 @@ class UserTest < ActiveSupport::TestCase
   test "sinks are ordered by created_at ascending (oldest first)" do
     user = User.create!(email_address: "order@test.com", password: "password123", account: accounts(:primary_account))
 
-    sink2 = user.sinks.create!(name: "Newer Sink")
-    sink1 = user.sinks.create!(name: "Older Sink", created_at: 1.day.ago)
+    sink2 = user.sinks.create!(name: "Newer Sink", account: accounts(:primary_account))
+    sink1 = user.sinks.create!(name: "Older Sink", created_at: 1.day.ago, account: accounts(:primary_account))
 
     assert_equal [ sink1, sink2 ], user.sinks.to_a
   end

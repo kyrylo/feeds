@@ -6,7 +6,7 @@ class Sinks::Columns::ViewsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "updates column_last_viewed_at for the current user when they are a member" do
-    sink = users(:test_owner).sinks.create!(name: "View Tracking Test Sink")
+    sink = users(:test_owner).sinks.create!(name: "View Tracking Test Sink", account: accounts(:primary_account))
     column = sink.columns.create!(name: "Test Column")
 
     membership = sink.sink_memberships.find_or_create_by!(user: users(:test_owner))
@@ -24,7 +24,7 @@ class Sinks::Columns::ViewsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "gracefully returns :ok (no-op) when the user has no membership in the sink" do
-    sink = users(:test_owner).sinks.create!(name: "No Membership Test Sink")
+    sink = users(:test_owner).sinks.create!(name: "No Membership Test Sink", account: accounts(:primary_account))
     column = sink.columns.create!(name: "Test Column")
 
     sink.sink_memberships.where(user: users(:test_owner)).destroy_all
@@ -38,7 +38,7 @@ class Sinks::Columns::ViewsControllerTest < ActionDispatch::IntegrationTest
   test "requires authentication" do
     sign_out
 
-    sink = users(:test_owner).sinks.create!(name: "Auth Test Sink")
+    sink = users(:test_owner).sinks.create!(name: "Auth Test Sink", account: accounts(:primary_account))
     column = sink.columns.create!(name: "Test Column")
 
     post sink_column_views_path(sink, column)
