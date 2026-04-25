@@ -1,4 +1,5 @@
 primary_account:
   account: primary_account
+  folder: my_projects
   name: primary_account
   token: synthetic-owner-feed-token

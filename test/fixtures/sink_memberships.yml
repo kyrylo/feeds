@@ -1,3 +1,11 @@
 test_owner_primary_account:
   sink: primary_account
   user: test_owner
+
+test_member_primary_account:
+  sink: primary_account
+  user: test_member
+
+test_admin_primary_account:
+  sink: primary_account
+  user: test_admin
