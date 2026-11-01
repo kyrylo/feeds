@@ -5,7 +5,7 @@ ruby file: ".ruby-version"
 gem "rails", "~> 8.1.2"
 
 # Drivers
-gem "pg", "~> 1.1"
+gem "pg", "~> 1.7"
 
 # Deployment
 gem "puma", ">= 5.0"
