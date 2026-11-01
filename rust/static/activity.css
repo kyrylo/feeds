@@ -182,6 +182,7 @@ dialog > p { font-size: 11px; margin-top: 22px; }
   :root { font-size: 12px; }
   .topbar-inner { padding: 5px 10px; gap: 8px; }
   .brand-group { gap: 10px; }
+  .brand-group:has(.feeds-toggle) .wordmark { display: none; }
   .wordmark { font-size: 13px; }
   .wordmark span { margin-right: 0; }
   .topbar nav { gap: 8px; font-size: 10px; }
@@ -193,11 +194,11 @@ dialog > p { font-size: 11px; margin-top: 22px; }
   .feed-sidebar { display: none; }
   .feeds-open .feed-sidebar { display: flex; position: absolute; z-index: 3; width: 200px; top: 0; bottom: 0; box-shadow: 12px 0 24px #0003; }
   .feeds-toggle { display: inline-block; font-size: 10px; }
-  .event-row { grid-template-columns: 7.5ch minmax(0, 1fr) 1ch; gap: 0 8px; padding: 3px 10px 3px 8px; min-height: 24px; }
-  .event-row time { font-size: 10px; }
-  .event-kind { grid-row: 1; grid-column: 2; font-size: 11px; }
-  .event-source { text-align: left; grid-row: 2; grid-column: 1; font-size: 10px; }
-  .event-text { grid-row: 2; grid-column: 2; }
+  .event-row { grid-template-columns: minmax(0, 1fr) max-content 1ch; gap: 0 8px; padding: 3px 10px 3px 8px; min-height: 24px; }
+  .event-row time { grid-row: 1; grid-column: 2; font-size: 10px; }
+  .event-kind { grid-row: 1; grid-column: 1; font-size: 11px; }
+  .event-source { text-align: left; grid-row: 3; grid-column: 1 / -1; font-size: 10px; }
+  .event-text { grid-row: 2; grid-column: 1 / -1; }
   .event-chevron { grid-row: 1; grid-column: 3; }
   .event-detail { margin: 2px 10px 8px; padding: 6px 8px; }
   .log-search { padding: 4px 10px; }
@@ -216,7 +217,7 @@ dialog > p { font-size: 11px; margin-top: 22px; }
 .single-feed .event-detail { margin-left: calc(14ch + 22px); }
 @media (max-width: 1100px) { .single-feed .event-row { grid-template-columns: 14ch 16ch minmax(0, 1fr) 1ch; } }
 @media (max-width: 700px) {
-  .single-feed .event-row { grid-template-columns: 7.5ch minmax(0, 1fr) 1ch; }
+  .single-feed .event-row { grid-template-columns: minmax(0, 1fr) max-content 1ch; }
   .single-feed .event-detail { margin-left: 10px; }
 }
 .connections-page { max-width: 900px; margin: auto; }
