@@ -2,6 +2,18 @@
 
 [Back to Feeds](../README.md)
 
+## Change your password
+
+Sign in and open **Settings → password**. Enter your current password, choose a
+new one, and confirm it. The change is saved in SQLite immediately and signs out
+your other sessions; no restart is needed. There is no username for a single-owner
+installation.
+
+`FEEDS_PASSWORD_HASH` is only for initial setup. Once the owner exists, changing
+that environment variable cannot overwrite the stored password. Use Settings or
+`reset-password` instead. Existing Telesink installations keep their old password
+when upgrading to Feeds. Passwords are stored as hashes and cannot be retrieved.
+
 ## Reset a forgotten password
 
 No SMTP is required. The command reads a new password from stdin, updates the

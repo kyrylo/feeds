@@ -21,6 +21,10 @@ service identity, data volume, `DATABASE_URL`, and `SECRET_KEY_BASE`.
    event URLs; existing URLs keep the same tokens and continue accepting events.
 5. Update event senders at your own pace. Keep the old host routed directly to
    Feeds until they have moved; some webhook clients do not follow redirects.
+6. To retire the old address, set `proxy.host` to the new hostname only, remove
+   `proxy.hosts`, and apply the proxy configuration. Verify that the new host
+   serves Feeds and the old host no longer does. Event senders must use the new
+   hostname after this step; their feed tokens stay the same.
 
 Cookies are scoped to their host, so sign in again on the new domain. Keeping the
 session secret preserves existing sessions on the old domain.
