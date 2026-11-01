@@ -87,7 +87,7 @@ dependencies = [
  "sha1 0.10.7",
  "sync_wrapper",
  "tokio",
- "tokio-tungstenite",
+ "tokio-tungstenite 0.29.0",
  "tower",
  "tower-layer",
  "tower-service",
@@ -457,6 +457,38 @@ name = "fastrand"
 version = "2.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "da7c62ceae207dd37ea5b845da6a0696c799f85e97da1ab5b7910be3c1c80223"
+
+[[package]]
+name = "feeds"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "base64 0.23.1",
+ "bcrypt",
+ "chrono",
+ "chrono-tz",
+ "futures-util",
+ "hmac",
+ "http-body-util",
+ "lettre",
+ "libsqlite3-sys",
+ "minijinja",
+ "pbkdf2",
+ "percent-encoding",
+ "rand 0.9.4",
+ "regex",
+ "serde",
+ "serde_json",
+ "serde_urlencoded",
+ "sha1 0.11.0",
+ "sha2 0.11.0",
+ "sqlx",
+ "tokio",
+ "tokio-tungstenite 0.30.0",
+ "tower",
+ "tower-http",
+ "unicode-normalization",
+]
 
 [[package]]
 name = "find-msvc-tools"
@@ -1761,38 +1793,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "feeds"
-version = "0.1.0"
-dependencies = [
- "axum",
- "base64 0.23.1",
- "bcrypt",
- "chrono",
- "chrono-tz",
- "futures-util",
- "hmac",
- "http-body-util",
- "lettre",
- "libsqlite3-sys",
- "minijinja",
- "pbkdf2",
- "percent-encoding",
- "rand 0.9.4",
- "regex",
- "serde",
- "serde_json",
- "serde_urlencoded",
- "sha1 0.11.0",
- "sha2 0.11.0",
- "sqlx",
- "tokio",
- "tokio-tungstenite",
- "tower",
- "tower-http",
- "unicode-normalization",
-]
-
-[[package]]
 name = "thiserror"
 version = "2.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1885,7 +1885,19 @@ dependencies = [
  "futures-util",
  "log",
  "tokio",
- "tungstenite",
+ "tungstenite 0.29.0",
+]
+
+[[package]]
+name = "tokio-tungstenite"
+version = "0.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "17a073bfed563fa236697a068031408a93cd9522e08abf9933ead3e73411bd71"
+dependencies = [
+ "futures-util",
+ "log",
+ "tokio",
+ "tungstenite 0.30.0",
 ]
 
 [[package]]
@@ -1998,6 +2010,22 @@ dependencies = [
  "log",
  "rand 0.9.4",
  "sha1 0.10.7",
+ "thiserror",
+]
+
+[[package]]
+name = "tungstenite"
+version = "0.30.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e48ac77174b19c110a50ab2128b24215ac9cb40e0e12e093fb602d175c569d22"
+dependencies = [
+ "bytes",
+ "data-encoding",
+ "http",
+ "httparse",
+ "log",
+ "rand 0.10.3",
+ "sha1 0.11.0",
  "thiserror",
 ]
 
