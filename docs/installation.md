@@ -98,16 +98,18 @@ For a **new installation**:
 ```sh
 cp config/deploy.yml.example config/deploy.yml
 cp .kamal/secrets.example .kamal/secrets
-kamal setup
+bin/deploy setup
 ```
 
-Open `https://YOUR_HOSTNAME` and sign in. Use `kamal deploy` for subsequent
+Open `https://YOUR_HOSTNAME` and sign in. Use `bin/deploy` for subsequent
 releases, `kamal logs` for logs, and `kamal db_check` to verify SQLite.
 The default registry is `ghcr.io`; use `FEEDS_REGISTRY` to change it and
 `FEEDS_ARCH=arm64` for an ARM server.
 
-Kamal builds committed Git source by default. Commit the intended version before
-deploying, or deliberately set `builder.context: .` for a local working tree.
+`bin/deploy` requires a clean Git checkout and uses the full commit SHA as the
+image tag. Kamal builds that committed source; keep the template’s default Git
+build context so ignored local settings are excluded. Each installation supplies
+its own host, image repository, and secrets through the ignored local files.
 For existing installations, merge the template into your own configuration;
 keep your original secret, host, and data volume. This image now listens on
 port **3000**, so set `proxy.app_port: 3000` (or explicitly retain

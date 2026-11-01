@@ -14,14 +14,14 @@ COPY app/assets/stylesheets ./app/assets/stylesheets
 COPY app/javascript ./app/javascript
 COPY vendor/javascript ./vendor/javascript
 COPY public ./public
-RUN --mount=type=cache,id=telesink-rust-registry,target=/usr/local/cargo/registry \
-    --mount=type=cache,id=telesink-rust-target-${TARGETARCH},sharing=locked,target=/source/rust/target \
+RUN --mount=type=cache,id=feeds-rust-registry,target=/usr/local/cargo/registry \
+    --mount=type=cache,id=feeds-rust-target-${TARGETARCH},sharing=locked,target=/source/rust/target \
     CARGO_INCREMENTAL=0 cargo build --manifest-path rust/Cargo.toml --locked --release --jobs 2 --bin feeds && \
     install -D rust/target/release/feeds /out/feeds && install -d -m 0750 /out/data && ldd /out/feeds
 
 FROM build AS migration-build
-RUN --mount=type=cache,id=telesink-rust-registry,target=/usr/local/cargo/registry \
-    --mount=type=cache,id=telesink-rust-target-${TARGETARCH},sharing=locked,target=/source/rust/target \
+RUN --mount=type=cache,id=feeds-rust-registry,target=/usr/local/cargo/registry \
+    --mount=type=cache,id=feeds-rust-target-${TARGETARCH},sharing=locked,target=/source/rust/target \
     CARGO_INCREMENTAL=0 cargo build --manifest-path rust/Cargo.toml --locked --release --jobs 2 --features postgres-import --bin feeds-import-postgres && \
     install -D rust/target/release/feeds-import-postgres /out/feeds-import-postgres
 
@@ -40,8 +40,8 @@ COPY --chown=65532:65532 --from=build /out/data /data
 COPY LICENSE /usr/share/licenses/feeds/LICENSE
 COPY rust/vendor/hotwired/*-LICENSE /usr/share/licenses/feeds/
 USER 65532:65532
-# Keep the legacy default overridable; explicit FEEDS_BIND takes precedence.
-ENV TELESINK_BIND=0.0.0.0:3000
+# Override FEEDS_BIND when exposing a different container port.
+ENV FEEDS_BIND=0.0.0.0:3000
 ENV DATABASE_URL=sqlite:///data/feeds.sqlite3
 VOLUME ["/data"]
 EXPOSE 3000

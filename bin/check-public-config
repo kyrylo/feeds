@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+"""Reject local deployment files and machine-specific paths in tracked source."""
+import ipaddress
+from pathlib import Path
+import re
+import subprocess
+import sys
+
+root = Path(__file__).resolve().parent.parent
+files = subprocess.check_output(["git", "ls-files", "-z"], cwd=root).decode().split("\0")
+home_path = re.compile(r"/(?:Users/[^/\s]+|home/[^/\s]+|root)/")
+ipv4 = re.compile(r"(?<![\w.])(?:\d{1,3}\.){3}\d{1,3}(?![\w.])")
+errors = []
+for name in filter(None, files):
+    path = Path(name)
+    private = (
+        (path.name.startswith(".env") and not path.name.endswith(".example"))
+        or (name.startswith(".kamal/secrets") and name != ".kamal/secrets.example")
+        or (name.startswith("config/deploy") and path.suffix in (".yml", ".yaml"))
+        or name.startswith("config/credentials")
+        or path.suffix in (".key", ".pem", ".p12", ".sqlite", ".sqlite3")
+    )
+    if private:
+        errors.append(f"{name}: local credentials, data, or deployment configuration must stay untracked")
+    try:
+        lines = (root / path).read_text().splitlines()
+    except (UnicodeError, FileNotFoundError):
+        continue
+    for number, line in enumerate(lines, 1):
+        if home_path.search(line):
+            errors.append(f"{name}:{number}: replace the machine-specific home path")
+        for value in ([] if path.name.endswith(".lock") else ipv4.findall(line)):
+            try:
+                address = ipaddress.ip_address(value)
+            except ValueError:
+                continue
+            if address.is_global:
+                errors.append(f"{name}:{number}: use a reserved example IP address")
+if errors:
+    print("\n".join(errors), file=sys.stderr)
+    sys.exit(1)
+print("Public configuration check passed: no tracked local settings, home paths, or public server IP literals.")

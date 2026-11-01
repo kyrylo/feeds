@@ -1,0 +1,24 @@
+title = "Feeds secret scanning"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Fixed synthetic Rails compatibility signing key"
+condition = "AND"
+paths = ['''(?:^|/)bin/rails-reference$''', '''(?:^|/)rust/reference/container_check\.py$''']
+regexTarget = "secret"
+regexes = ['''^0123456789abcdef(?:0123456789abcdef){0,3}$''']
+
+[[allowlists]]
+description = "Exact signed compatibility fixtures generated with the fixed test key"
+condition = "AND"
+paths = ['''(?:^|/)rust/tests/fixtures/live-contracts\.json$''']
+regexTarget = "secret"
+regexes = [
+  '''^InVzZXJfMTIzX3NpbmtzIg==\-\-a77c105f980ee8ffbd6d6fd6999cb195a380c19e24e421a98fbcbdcd711b0eb8$''',
+  '''^IloybGtPaTh2ZEdWc1pYTnBibXN2VTJsdWF5ODBOVEkwTVRnM05USTpldmVudHM6YWxsOmxpdmUi\-\-f701bbca800d995d900a44e6df30b0c5c0eb8e236de0337d8a4aba0b0115865a$''',
+  '''^IloybGtPaTh2ZEdWc1pYTnBibXN2VTJsdWF5ODBOVEkwTVRnM05USTpldmVudHM6cGF5bWVudF9mYWlsZWQ6MjAyNi0xMC0xODpwcm9wZXJ0eTozMWE4ZmQ1MGU5Yjgi\-\-78cb34cecf8c31e995b73688d30cba901c370b6ed6eb625f9c615e653aef6515$''',
+  '''^IloybGtPaTh2ZEdWc1pYTnBibXN2VTJsdWF5ODBOVEkwTVRnM05USTpldmVudF90eXBlX2NvdW50cyI=\-\-bed95293499b24e293ac11d718f5afceeaadc8a97e6656ec8aa96c5909850553$''',
+  '''^InRlbGVzaW5rL3YxOntcImtpbmRcIjpcInNpZGViYXJcIixcInVzZXJcIjoxMjN9Ig==\-\-3dc2b2c602161435efa7ced7a924a77470f5bfaca9da1f186fafe5545c71c4ab$''',
+]

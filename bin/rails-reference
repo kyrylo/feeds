@@ -8,5 +8,5 @@ export DATABASE_URL=postgresql://telesink@127.0.0.1:55438/telesink_rust_referenc
 export BUNDLE_PATH="$task_root/tmp/rust-port/bundle"
 export SECRET_KEY_BASE=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
 export PARALLEL_WORKERS=1
-task_ruby=${TELESINK_REFERENCE_RUBY:-ruby}
+task_ruby=${FEEDS_REFERENCE_RUBY:-${TELESINK_REFERENCE_RUBY:-ruby}}
 exec "$task_ruby" bin/rails "$@"

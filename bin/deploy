@@ -1,0 +1,17 @@
+#!/bin/sh
+# Deploy committed source with its full Git SHA as the image tag.
+set -eu
+task_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$task_root"
+case "${1:-deploy}" in
+  deploy|setup) operation=${1:-deploy} ;;
+  --help|-h) printf '%s\n' 'Usage: bin/deploy [setup]' 'Requires a clean checkout and private Kamal configuration.'; exit 0 ;;
+  *) printf '%s\n' 'Usage: bin/deploy [setup]' >&2; exit 2 ;;
+esac
+if [ "$#" -gt 1 ]; then printf '%s\n' 'Too many arguments.' >&2; exit 2; fi
+if [ -n "$(git status --porcelain --untracked-files=normal)" ]; then
+  printf '%s\n' 'Commit or move pending changes before deploying; the image tag must identify the exact source.' >&2
+  exit 1
+fi
+version=$(git rev-parse --verify HEAD)
+exec bin/kamal "$operation" --version "$version"

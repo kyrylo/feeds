@@ -1,5 +1,5 @@
 primary_account:
   join_code: 123
 
-telesink:
+secondary_account:
   join_code: abcd

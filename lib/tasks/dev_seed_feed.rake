@@ -1007,7 +1007,7 @@ class DevelopmentFeedSeeder
     agents = [
       "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/134.0",
       "curl/8.7.1",
-      "TelesinkSDK/1.2.3 Ruby",
+      "FeedsSDK/1.2.3 Ruby",
       "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) Mobile Safari/604.1"
     ]
 

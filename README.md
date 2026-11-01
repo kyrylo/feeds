@@ -59,6 +59,8 @@ is non-root and contains no Ruby, Node, or shell. Mount a persistent data volume
 
 [Deploy with Kamal](docs/installation.md#deploy-with-kamal) to one server with
 HTTPS and a persistent SQLite volume, using `config/deploy.yml.example`.
+`bin/deploy` tags each release with its full Git commit SHA. Your server address,
+local deployment config, and secrets stay outside version control.
 
 ## Local demo
 
