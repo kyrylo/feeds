@@ -459,6 +459,38 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "da7c62ceae207dd37ea5b845da6a0696c799f85e97da1ab5b7910be3c1c80223"
 
 [[package]]
+name = "feeds"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "base64 0.23.1",
+ "bcrypt",
+ "chrono",
+ "chrono-tz",
+ "futures-util",
+ "hmac",
+ "http-body-util",
+ "lettre",
+ "libsqlite3-sys",
+ "minijinja",
+ "pbkdf2",
+ "percent-encoding",
+ "rand 0.9.4",
+ "regex",
+ "serde",
+ "serde_json",
+ "serde_urlencoded",
+ "sha1 0.11.0",
+ "sha2 0.11.0",
+ "sqlx",
+ "tokio",
+ "tokio-tungstenite",
+ "tower",
+ "tower-http",
+ "unicode-normalization",
+]
+
+[[package]]
 name = "find-msvc-tools"
 version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -548,9 +580,9 @@ checksum = "cd417de3d1d015fc3bfd2b1ea46dfc7bab72ef86f1cc7cc9c78e728b34a6d1fd"
 
 [[package]]
 name = "futures-util"
-version = "0.3.32"
+version = "0.3.34"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "389ca41296e6190b48053de0321d02a77f32f8a5d2461dd38762c0593805c6d6"
+checksum = "0d50a92467f8ba5dd6e3ee5d4bd04d73ab2e4e1c44474a0674821dfce14b79bc"
 dependencies = [
  "futures-core",
  "futures-io",
@@ -1758,38 +1790,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 3.0.9",
-]
-
-[[package]]
-name = "feeds"
-version = "0.1.0"
-dependencies = [
- "axum",
- "base64 0.23.1",
- "bcrypt",
- "chrono",
- "chrono-tz",
- "futures-util",
- "hmac",
- "http-body-util",
- "lettre",
- "libsqlite3-sys",
- "minijinja",
- "pbkdf2",
- "percent-encoding",
- "rand 0.9.4",
- "regex",
- "serde",
- "serde_json",
- "serde_urlencoded",
- "sha1 0.11.0",
- "sha2 0.11.0",
- "sqlx",
- "tokio",
- "tokio-tungstenite",
- "tower",
- "tower-http",
- "unicode-normalization",
 ]
 
 [[package]]
