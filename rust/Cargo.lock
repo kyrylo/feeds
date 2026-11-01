@@ -459,6 +459,38 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "da7c62ceae207dd37ea5b845da6a0696c799f85e97da1ab5b7910be3c1c80223"
 
 [[package]]
+name = "feeds"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "base64 0.23.1",
+ "bcrypt",
+ "chrono",
+ "chrono-tz",
+ "futures-util",
+ "hmac",
+ "http-body-util",
+ "lettre",
+ "libsqlite3-sys",
+ "minijinja",
+ "pbkdf2",
+ "percent-encoding",
+ "rand 0.9.4",
+ "regex",
+ "serde",
+ "serde_json",
+ "serde_urlencoded",
+ "sha1 0.11.0",
+ "sha2 0.11.0",
+ "sqlx",
+ "tokio",
+ "tokio-tungstenite",
+ "tower",
+ "tower-http",
+ "unicode-normalization",
+]
+
+[[package]]
 name = "find-msvc-tools"
 version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1761,38 +1793,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "feeds"
-version = "0.1.0"
-dependencies = [
- "axum",
- "base64 0.23.1",
- "bcrypt",
- "chrono",
- "chrono-tz",
- "futures-util",
- "hmac",
- "http-body-util",
- "lettre",
- "libsqlite3-sys",
- "minijinja",
- "pbkdf2",
- "percent-encoding",
- "rand 0.9.4",
- "regex",
- "serde",
- "serde_json",
- "serde_urlencoded",
- "sha1 0.11.0",
- "sha2 0.11.0",
- "sqlx",
- "tokio",
- "tokio-tungstenite",
- "tower",
- "tower-http",
- "unicode-normalization",
-]
-
-[[package]]
 name = "thiserror"
 version = "2.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1918,9 +1918,9 @@ dependencies = [
 
 [[package]]
 name = "tower-http"
-version = "0.6.11"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4cfcf7e2740e6fc6d4d688b4ef00650406bb94adf4731e43c096c3a19fe40840"
+checksum = "08a05a66a4fdd61cbbe0a1d755ffe0ca6aba159dd4820936a0ff8a8278245b9c"
 dependencies = [
  "bitflags",
  "bytes",
