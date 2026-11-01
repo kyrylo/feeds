@@ -1,0 +1,3 @@
+<turbo-frame id="event_types"><div class="column"><div class="column__header"><h2 class="column__title">event "{{ event_type_label }}"</h2><a href="/sinks/{{ sink.id }}/edit" data-turbo-frame="event_types" class="link link--subtle" title="close">{% set icon='clear' %}{% include 'icons.html' %}</a></div><div class="column-data">
+<form action="{{ event_type_url }}" method="post" data-turbo-confirm="delete all events of type {{ event_type_label }}?"><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="delete"><button type="submit" class="btn btn--danger">delete this event type</button></form>
+</div></div></turbo-frame>

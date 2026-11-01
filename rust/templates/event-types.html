@@ -1,0 +1,3 @@
+<turbo-frame id="event_types"><div class="column"><div class="column__header"><h1 class="column__title">event types in this sink</h1></div><div class="column-data">
+{% if event_types %}<ul class="list">{% for kind in event_types %}<li><a href="{{ kind.url }}" data-turbo-frame="event_types" class="link">{{ kind.label }}</a></li>{% endfor %}</ul>{% else %}<p class="column-data__text italic">no events yet</p>{% endif %}
+</div></div></turbo-frame>

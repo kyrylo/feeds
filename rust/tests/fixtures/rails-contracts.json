@@ -1,0 +1,271 @@
+{
+  "rails_version": "8.1.3",
+  "schema_version": 20260629010000,
+  "now": "2026-10-18T00:00:00Z",
+  "events": [
+    {
+      "input": {},
+      "valid": false,
+      "errors": [
+        "Text can't be blank"
+      ]
+    },
+    {
+      "input": {
+        "text": "Hello there"
+      },
+      "valid": true,
+      "output": {
+        "event_type": "event",
+        "emoji": "📌",
+        "text": "Hello there",
+        "properties": {},
+        "occurred_at": "2026-10-18T00:00:00.000000Z",
+        "idempotency_key": null,
+        "sdk_name": null,
+        "sdk_version": null
+      },
+      "search_text": "event Hello there"
+    },
+    {
+      "input": {
+        "text": ""
+      },
+      "valid": false,
+      "errors": [
+        "Text can't be blank"
+      ]
+    },
+    {
+      "input": {
+        "text": " \t\n"
+      },
+      "valid": false,
+      "errors": [
+        "Text can't be blank"
+      ]
+    },
+    {
+      "input": {
+        "text": " "
+      },
+      "valid": false,
+      "errors": [
+        "Text can't be blank"
+      ]
+    },
+    {
+      "input": {
+        "text": false
+      },
+      "valid": false,
+      "errors": [
+        "Text can't be blank"
+      ]
+    },
+    {
+      "input": {
+        "text": 0
+      },
+      "valid": true,
+      "output": {
+        "event_type": "event",
+        "emoji": "📌",
+        "text": "0",
+        "properties": {},
+        "occurred_at": "2026-10-18T00:00:00.000000Z",
+        "idempotency_key": null,
+        "sdk_name": null,
+        "sdk_version": null
+      },
+      "search_text": "event 0"
+    },
+    {
+      "input": {
+        "text": "signed up",
+        "event": "",
+        "emoji": " "
+      },
+      "valid": true,
+      "output": {
+        "event_type": "event",
+        "emoji": "📌",
+        "text": "signed up",
+        "properties": {},
+        "occurred_at": "2026-10-18T00:00:00.000000Z",
+        "idempotency_key": null,
+        "sdk_name": null,
+        "sdk_version": null
+      },
+      "search_text": "event signed up"
+    },
+    {
+      "input": {
+        "text": "hello",
+        "event": "user.signed_up",
+        "emoji": "👤",
+        "idempotency_key": "42",
+        "sdk": {
+          "name": "telesink-ruby",
+          "version": "1.3.0"
+        }
+      },
+      "valid": true,
+      "output": {
+        "event_type": "user.signed_up",
+        "emoji": "👤",
+        "text": "hello",
+        "properties": {},
+        "occurred_at": "2026-10-18T00:00:00.000000Z",
+        "idempotency_key": "42",
+        "sdk_name": "telesink-ruby",
+        "sdk_version": "1.3.0"
+      },
+      "search_text": "user.signed_up hello"
+    },
+    {
+      "input": {
+        "text": "Unicode: café 日本語 🚀",
+        "event": "request",
+        "properties": {
+          "user_id": 42,
+          "nil_value": null,
+          "flag": false,
+          "nested": {
+            "array": [
+              1,
+              "two"
+            ]
+          }
+        }
+      },
+      "valid": true,
+      "output": {
+        "event_type": "request",
+        "emoji": "📌",
+        "text": "Unicode: café 日本語 🚀",
+        "properties": {
+          "user_id": 42,
+          "nil_value": {},
+          "flag": false,
+          "nested": {
+            "array": [
+              1,
+              "two"
+            ]
+          }
+        },
+        "occurred_at": "2026-10-18T00:00:00.000000Z",
+        "idempotency_key": null,
+        "sdk_name": null,
+        "sdk_version": null
+      },
+      "search_text": "request Unicode: café 日本語 🚀 user_id 42 nil_value {} flag false nested {\"array\":[1,\"two\"]}"
+    },
+    {
+      "input": {
+        "text": "UTC",
+        "occurred_at": "2026-03-20T09:55:00.480Z"
+      },
+      "valid": true,
+      "output": {
+        "event_type": "event",
+        "emoji": "📌",
+        "text": "UTC",
+        "properties": {},
+        "occurred_at": "2026-03-20T09:55:00.480000Z",
+        "idempotency_key": null,
+        "sdk_name": null,
+        "sdk_version": null
+      },
+      "search_text": "event UTC"
+    },
+    {
+      "input": {
+        "text": "offset",
+        "occurred_at": "2026-03-20T17:55:00.480+08:00"
+      },
+      "valid": true,
+      "output": {
+        "event_type": "event",
+        "emoji": "📌",
+        "text": "offset",
+        "properties": {},
+        "occurred_at": "2026-03-20T09:55:00.480000Z",
+        "idempotency_key": null,
+        "sdk_name": null,
+        "sdk_version": null
+      },
+      "search_text": "event offset"
+    },
+    {
+      "input": {
+        "text": "fraction",
+        "occurred_at": "2026-03-20T09:55:00.123456Z"
+      },
+      "valid": true,
+      "output": {
+        "event_type": "event",
+        "emoji": "📌",
+        "text": "fraction",
+        "properties": {},
+        "occurred_at": "2026-03-20T09:55:00.123456Z",
+        "idempotency_key": null,
+        "sdk_name": null,
+        "sdk_version": null
+      },
+      "search_text": "event fraction"
+    },
+    {
+      "input": {
+        "text": "invalid",
+        "occurred_at": "not-a-time"
+      },
+      "valid": true,
+      "output": {
+        "event_type": "event",
+        "emoji": "📌",
+        "text": "invalid",
+        "properties": {},
+        "occurred_at": "2026-10-18T00:00:00.000000Z",
+        "idempotency_key": null,
+        "sdk_name": null,
+        "sdk_version": null
+      },
+      "search_text": "event invalid"
+    },
+    {
+      "input": {
+        "text": "blank key",
+        "idempotency_key": "   "
+      },
+      "valid": true,
+      "output": {
+        "event_type": "event",
+        "emoji": "📌",
+        "text": "blank key",
+        "properties": {},
+        "occurred_at": "2026-10-18T00:00:00.000000Z",
+        "idempotency_key": null,
+        "sdk_name": null,
+        "sdk_version": null
+      },
+      "search_text": "event blank key"
+    }
+  ],
+  "session": {
+    "id": 126,
+    "cookie": "eyJfcmFpbHMiOnsibWVzc2FnZSI6Ik1USTIiLCJleHAiOiIyMDQ2LTEwLTE4VDAwOjAwOjAwLjAwMFoiLCJwdXIiOiJjb29raWUuc2Vzc2lvbl9pZCJ9fQ==--26df5cc93e7728ff31c851ba17aa22c81c51d52f",
+    "password_digest": "$2a$04$krUWcoO8QAK/1D9kgPxmoO5X5w3FZMWJZb7sgLriXFg7JKr0A7B0m",
+    "password": "synthetic-password"
+  },
+  "tokens": {
+    "user_id": 694206276,
+    "password_digest": "$2a$04$krUWcoO8QAK/1D9kgPxmoO5X5w3FZMWJZb7sgLriXFg7JKr0A7B0m",
+    "reset": "eyJfcmFpbHMiOnsiZGF0YSI6WzY5NDIwNjI3NiwiMUQ5a2dQeG1vTyJdLCJleHAiOiIyMDI2LTEwLTE4VDAwOjE1OjAwLjAwMFoiLCJwdXIiOiJVc2VyXG5wYXNzd29yZF9yZXNldFxuOTAwIn19--75d0ea7671beb7aa0ced336a6d177cfe848b395d",
+    "transfer": "eyJfcmFpbHMiOnsiZGF0YSI6Njk0MjA2Mjc2LCJleHAiOiIyMDI2LTEwLTE4VDA0OjAwOjAwLjAwMFoiLCJwdXIiOiJ1c2VyL3RyYW5zZmVyIn19--1fb4ad283f397f7b1d592044908b13d422febed9244af2478db3ddeace097c5e",
+    "reset_purpose": "User\npassword_reset\n900",
+    "reset_digest": "SHA1",
+    "transfer_digest": "SHA256"
+  }
+}

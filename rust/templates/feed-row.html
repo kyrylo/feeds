@@ -1,0 +1,6 @@
+<div id="feed_item_event_{{ event.id }}" class="event-feed__item{% if new_event %} event-feed__item--new{% endif %}" data-event-id="{{ event.id }}" data-filter-properties="{{ event.numeric_properties }}" data-search-text="{{ event.search_text }}">
+  <a href="{{ event.detail_url }}" data-turbo-frame="detail_event_{{ event.id }}" data-turbo-prefetch="false" data-action="click->event-feed#openDetail" data-event-feed-detail-frame-param="detail_event_{{ event.id }}" aria-controls="detail_event_{{ event.id }}" aria-expanded="false" class="event-row" title="{{ event.text }}">
+    {% include 'event-row-content.html' %}
+  </a>
+  <turbo-frame id="detail_event_{{ event.id }}" class="event-detail-frame" data-event-feed-target="detail"></turbo-frame>
+</div>

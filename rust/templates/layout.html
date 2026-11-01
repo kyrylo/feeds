@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Feeds">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="csrf-param" content="authenticity_token">
+    <meta name="csrf-token" content="{{ csrf }}">
+    {% if demo %}<meta name="turbo-prefetch" content="false"><meta name="robots" content="noindex, nofollow">{% endif %}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
+    <link rel="shortcut icon" href="/favicon.ico?v=3">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-title" content="Feeds">
+    {% for url in styles %}<link rel="stylesheet" href="{{ url }}" data-turbo-track="reload">{% endfor %}
+    <script type="importmap" data-turbo-track="reload">{{ importmap|safe }}</script>
+    <script type="module">import "application";</script>
+  </head>
+  <body class="app">
+    {% include sidebar %}
+    <main class="main">
+      {% if current_user %}<turbo-frame id="main_content" class="contents">{% endif %}
+      {% include page %}
+      {% if current_user %}</turbo-frame>{% endif %}
+    </main>
+  </body>
+</html>

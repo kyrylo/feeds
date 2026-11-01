@@ -1,0 +1,62 @@
+[
+  {
+    "peer": "127.0.0.1",
+    "forwarded": null,
+    "client": null,
+    "expected": "127.0.0.1"
+  },
+  {
+    "peer": "172.18.0.2",
+    "forwarded": "198.51.100.10",
+    "client": null,
+    "expected": "198.51.100.10"
+  },
+  {
+    "peer": "10.0.0.5",
+    "forwarded": "198.51.100.10, 192.168.1.2, 172.20.1.1",
+    "client": null,
+    "expected": "198.51.100.10"
+  },
+  {
+    "peer": "127.0.0.1",
+    "forwarded": "203.0.113.1, 198.51.100.10",
+    "client": null,
+    "expected": "198.51.100.10"
+  },
+  {
+    "peer": "::1",
+    "forwarded": "2001:db8::20, fd00::1, fe80::1",
+    "client": null,
+    "expected": "2001:db8::20"
+  },
+  {
+    "peer": "10.0.0.5",
+    "forwarded": "10.1.1.1, 192.168.1.2",
+    "client": null,
+    "expected": "10.1.1.1"
+  },
+  {
+    "peer": "127.0.0.1",
+    "forwarded": "garbage, 192.0.2.0/24, 198.51.100.10",
+    "client": null,
+    "expected": "198.51.100.10"
+  },
+  {
+    "peer": "127.0.0.1",
+    "forwarded": null,
+    "client": "198.51.100.10",
+    "expected": "198.51.100.10"
+  },
+  {
+    "peer": "127.0.0.1",
+    "forwarded": "198.51.100.10, 10.0.0.1",
+    "client": "198.51.100.10",
+    "expected": "198.51.100.10"
+  },
+  {
+    "peer": "127.0.0.1",
+    "forwarded": "198.51.100.10",
+    "client": "203.0.113.20",
+    "rejected": true
+  }
+]

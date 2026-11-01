@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+"""Build and run an isolated, localhost-only Feeds demo. Usage: bin/demo [stop]."""
+import datetime
+import html
+import http.cookiejar
+import json
+from pathlib import Path
+import re
+import secrets
+import subprocess
+import sys
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
+
+ROOT = Path(__file__).resolve().parent.parent
+NAME = 'feeds-demo'
+VOLUME = 'feeds-demo-data'
+IMAGE = 'feeds:local'
+LABEL = 'app.feeds.local-demo'
+BASE = 'http://localhost:4137'
+PASSWORD = 'feeds-demo-password'
+
+
+def docker(*args, data=None):
+    return subprocess.check_output(['docker', *args], input=data, text=True).strip()
+
+
+def existing_demo():
+    names = docker('container', 'ls', '-a', '--format', '{{.Names}}').splitlines()
+    if NAME not in names:
+        return False
+    info = json.loads(docker('inspect', NAME))[0]
+    if info['Config'].get('Labels', {}).get(LABEL) != 'true':
+        raise SystemExit(f'{NAME} already exists and is not managed by bin/demo.')
+    return True
+
+
+if sys.argv[1:] not in ([], ['stop']):
+    raise SystemExit('Usage: bin/demo [stop]')
+if sys.argv[1:] == ['stop']:
+    if existing_demo():
+        docker('stop', NAME)
+    print('Demo stopped. Its data is kept in ' + VOLUME + '.')
+    raise SystemExit(0)
+
+subprocess.run(['docker', 'build', '-t', IMAGE, '.'], cwd=ROOT, check=True)
+if existing_demo():
+    docker('rm', '--force', NAME)
+digest = docker('run', '--rm', '-i', IMAGE, 'hash-password', data=PASSWORD)
+docker('volume', 'create', VOLUME)
+docker('run', '-d', '--name', NAME, '--label', LABEL + '=true',
+       '--publish', '127.0.0.1:4137:3000', '--volume', VOLUME + ':/data',
+       '--env', 'SECRET_KEY_BASE=' + secrets.token_hex(64),
+       '--env', 'FEEDS_PASSWORD_HASH=' + digest,
+       '--env', 'FEEDS_PUBLIC_URL=' + BASE, IMAGE)
+deadline = time.monotonic() + 30
+while True:
+    try:
+        with urllib.request.urlopen(BASE + '/ready', timeout=2) as response:
+            if response.status == 200:
+                break
+    except OSError:
+        if time.monotonic() >= deadline:
+            raise SystemExit('Demo did not start. Check: docker logs ' + NAME)
+        time.sleep(.25)
+
+jar = http.cookiejar.CookieJar()
+client = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(jar))
+
+
+def get(path):
+    with client.open(BASE + path, timeout=10) as response:
+        return response.read().decode()
+
+
+def form(path, values):
+    values['authenticity_token'] = next(c.value for c in jar if c.name == 'telesink_csrf')
+    with client.open(BASE + path, urllib.parse.urlencode(values).encode(), timeout=10) as response:
+        return response.read().decode()
+
+
+get('/session/new')
+page = form('/session', {'password': PASSWORD})
+if 'id="activity"' not in page:
+    raise SystemExit('The demo owner password has changed. Sign in at ' + BASE + ' with your updated password.')
+examples = [
+    ('deploys', 'deployed', 'website · v0.8.2 deployed to production', {'app': 'website', 'region': 'ams', 'duration': '18s', 'commit': '8a9f2c1'}),
+    ('deploys', 'build_passed', 'feeds · all checks passed', {'app': 'feeds', 'tests': 84, 'duration': '12s'}),
+    ('deploys', 'backup_completed', 'storefront · daily backup verified · 2.4 MB', {'app': 'storefront', 'duration': '0.8s'}),
+    ('deploys', 'deployed', 'storefront · v1.4.0 is live · zero downtime', {'app': 'storefront', 'region': 'ams', 'commit': 'c91b6d2'}),
+    ('payments', 'paid', 'Acme renewed their Pro subscription · $29.00', {'amount': 29, 'currency': 'USD', 'plan': 'Pro'}),
+    ('payments', 'upgraded', 'Studio North upgraded to Team · $79.00', {'amount': 79, 'currency': 'USD', 'plan': 'Team'}),
+    ('signups', 'user_signed_up', 'maya@example.test signed up', {'plan': 'Pro', 'source': 'organic'}),
+    ('signups', 'website_added', 'New website connected · studio.example.test', {'website': 'studio.example.test'}),
+    ('errors', 'webhook_failed', 'Webhook returned 502 · retry scheduled in 30s', {'status': 502, 'attempt': 1, 'retry_in': '30s'}),
+    ('errors', 'recovered', 'Webhook delivered on retry · incident resolved', {'status': 200, 'attempt': 2}),
+]
+# Existing demo feeds are retained across rebuilds; create only missing ones.
+endpoints = {}
+for feed_name in dict.fromkeys(example[0] for example in examples):
+    page = get('/connect')
+    match = re.search(r'<a class="connection-name" href="(/feeds/\d+)">#' + re.escape(feed_name) + r'</a>', page, re.I)
+    if match:
+        page = get(match[1] + '/edit')
+    else:
+        page = form('/feeds', {'name': feed_name})
+    endpoints[feed_name] = html.unescape(re.search(r'id="feed-url" value="([^"]+)"', page)[1])
+now = datetime.datetime.now(datetime.timezone.utc)
+for i in range(160):
+    feed, event, text, properties = examples[i % len(examples)]
+    raw = {'event': event, 'text': text, 'properties': properties,
+           'occurred_at': (now - datetime.timedelta(seconds=i * 73)).isoformat()}
+    request = urllib.request.Request(endpoints[feed], json.dumps(raw).encode(), {
+        'Content-Type': 'application/json',
+        'Idempotency-Key': 'feeds-demo-' + str(i)})
+    with client.open(request, timeout=10) as response:
+        assert response.status == 201
+print('Feeds is running at ' + BASE)
+print('Password: ' + PASSWORD)
+print('160 synthetic events · 4 feeds · isolated volume ' + VOLUME)
+print('Stop with: bin/demo stop')

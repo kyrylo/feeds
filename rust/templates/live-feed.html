@@ -1,0 +1,2 @@
+{% if events %}<turbo-stream action="append" target="events_feed"><template>{% for event in events %}{% include 'feed-row.html' %}{% endfor %}</template></turbo-stream><turbo-stream action="remove" targets=".events__older-loader--empty"></turbo-stream>{% endif %}
+{% if type_filters %}{% for variant in ['desktop','mobile'] %}<turbo-stream action="update" target="event_type_filter_list_{{ variant }}"><template>{% include 'feed-types.html' %}</template></turbo-stream>{% endfor %}{% endif %}

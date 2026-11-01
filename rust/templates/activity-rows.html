@@ -1,0 +1,6 @@
+{% for event in events %}
+<details class="activity-event" id="activity-event-{{ event.id }}" data-event-id="{{ event.id }}" data-time="{{ event.occurred_at }}" data-new="{% if event.new %}true{% else %}false{% endif %}">
+  <summary class="event-row"><time datetime="{{ event.occurred_at }}" data-log-time title="{{ event.occurred_at }}">{{ event.log_time }}</time><span class="event-kind event-color-{{ event.event_color }}" title="{{ event.event_type }}">{{ event.event_type }}</span><span class="event-source source-color-{{ event.source_id|int % 5 }}" title="{{ event.source }}">{{ event.source }}</span><span class="event-text"><span class="event-emoji" aria-hidden="true">{{ event.emoji }}</span><span class="event-message">{{ event.text }}</span></span><span class="event-chevron" aria-hidden="true">+</span></summary>
+  <div class="event-detail" data-details-url="/activity/events/{{ event.id }}"><a href="/events/{{ event.id }}">Open full event →</a></div>
+</details>
+{% endfor %}

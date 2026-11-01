@@ -1,0 +1,32 @@
+<div class="column">
+  <div class="column__header"><h1 class="column__title">{{ title }}</h1></div>
+  <div class="column-data">
+    <p class="auth-intro">{% if mode == "register" %}Create the owner account for this installation. Setup closes after this step.{% else %}Welcome back. Your event log is waiting.{% endif %}</p>
+    <form action="{{ action }}" accept-charset="UTF-8" method="post" class="mt-1ch form">
+      <input type="hidden" name="authenticity_token" value="{{ csrf }}" autocomplete="off">
+      {% if not single_owner %}<div class="form-field">
+        <label for="{{ prefix }}email_address" class="form-field__label">email</label>
+        <input type="email" name="{% if prefix %}user[email_address]{% else %}email_address{% endif %}" id="{{ prefix }}email_address" value="{{ email_address }}" required autofocus autocomplete="username" class="text-field">
+      </div>{% endif %}
+      <div class="form-field">
+        <label for="{{ prefix }}password" class="form-field__label">password</label>
+        <input type="password" name="{% if prefix %}user[password]{% else %}password{% endif %}" id="{{ prefix }}password"{% if single_owner %} autofocus{% endif %} required autocomplete="{% if mode == 'login' %}current-password{% else %}new-password{% endif %}" maxlength="72" class="text-field">
+      </div>
+      {% if mode == 'register' %}
+      <div class="form-field">
+        <label for="user_password_confirmation" class="form-field__label">confirm password</label>
+        <input type="password" name="user[password_confirmation]" id="user_password_confirmation" required autocomplete="new-password" maxlength="72" class="text-field">
+      </div>
+      {% endif %}
+      {% if alert %}<div class="banner banner--danger">{{ alert }}</div>{% endif %}
+      {% if notice %}<div class="banner banner--success">{{ notice }}</div>{% endif %}
+      {% if errors %}<div class="banner banner--danger"><ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+      <div>
+        <button type="submit" class="btn btn--primary">{{ submit }}</button>
+        {% if mode == 'login' %}<a href="/passwords/new" class="link">forgot password?</a>{% endif %}
+      </div>
+      {% if mode == 'login' and setup_available %}<div><a href="/registration/new" class="link">set up Feeds</a></div>{% endif %}
+      {% if mode == 'register' %}<div>already have an account? <a href="/session/new" class="link">sign in</a></div>{% endif %}
+    </form>
+  </div>
+</div>

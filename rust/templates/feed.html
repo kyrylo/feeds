@@ -1,0 +1,18 @@
+<turbo-cable-stream-source channel="Turbo::StreamsChannel" signed-stream-name="{{ feed_stream }}"></turbo-cable-stream-source>
+<div class="sink-feed-layout">
+  <section class="event-feed" data-controller="event-feed" data-event-feed-calendar-month-value="{{ calendar.month }}" data-event-feed-can-mark-viewed-value="{{ can_mark_viewed }}" data-event-feed-event-type-value="{{ filters.event_type }}" data-event-feed-event-date-value="{{ filters.event_date }}" data-event-feed-seen-cutoff-value="{{ seen_cutoff }}" data-event-feed-property-key-value="{{ filters.property_key }}" data-event-feed-property-op-value="{{ filters.property_op }}" data-event-feed-property-value-value="{{ filters.property_value }}" data-event-feed-search-query-value="{{ filters.search_query }}" data-event-feed-view-url-value="/sinks/{{ sink.id }}/view">
+    <header class="event-feed__header"><h1 class="event-feed__title">{% if sink.folder_name %}<span class="event-feed__folder">{{ sink.folder_name }}</span><span class="event-feed__separator">/</span>{% endif %}<span class="event-feed__channel">#{{ sink.name }}</span></h1>
+      <div class="event-feed__context"><button type="button" class="event-feed__action" title="copy permalink" data-controller="copy-to-clipboard" data-action="copy-to-clipboard#copy" data-copy-to-clipboard-content-value="{{ permalink }}">permalink</button>
+        {% if can_administer %}<a href="/sinks/{{ sink.id }}/edit" title="edit sink" class="link link--subtle">{% set icon='edit' %}{% include 'icons.html' %}</a>{% endif %}
+        {% if active_filter %}<a href="/sinks/{{ sink.id }}" class="event-feed__action event-feed__action--clear" title="clear filters" data-turbo-frame="main_content" data-turbo-action="advance">{% set icon='clear' %}{% include 'icons.html' %}</a>{% endif %}
+      </div>
+    </header>
+    <details class="event-feed__mobile-tools"><summary class="event-feed__mobile-tools-summary"><span class="event-feed__mobile-tools-label">filters</span><span class="event-feed__mobile-tools-state">{% if active_filter %}active{% else %}all events{% endif %}</span></summary><div class="event-feed__mobile-tools-panel">{% set variant='mobile' %}{% include 'feed-tools.html' %}</div></details>
+    <div class="event-feed__scroll" data-event-feed-target="scroll">
+      {% include 'older-loader.html' %}
+      <div id="events_feed" class="event-feed__list" data-event-feed-target="list">{% for event in events %}{% include 'feed-row.html' %}{% endfor %}</div>
+    </div>
+    {% include 'feed-status.html' %}
+  </section>
+  <aside class="filter-rail"><div class="filter-rail__header"><h2 class="filter-rail__title">events</h2></div>{% set variant='desktop' %}{% include 'feed-tools.html' %}</aside>
+</div>

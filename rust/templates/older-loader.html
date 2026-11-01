@@ -1,0 +1,2 @@
+{% if older_url %}<button id="events_older_boundary" type="button" class="events__older-loader" aria-label="load older events" disabled data-action="click->event-feed#loadOlder" data-event-feed-target="olderLoader" data-url="{{ older_url }}"></button>
+{% else %}<div id="events_older_boundary" class="events__older-loader events__older-loader--empty">{% if initial and not events %}{{ empty_label }}{% endif %}</div>{% endif %}

@@ -1,0 +1,13 @@
+{% set newest=events|last %}
+<div class="event-status" aria-label="sink status"><div class="event-status__items">
+  <span class="event-status__connection" data-event-feed-target="connectionStatus">online</span>
+  <span class="event-status__view" title="{% if current_saved_view %}{{ current_saved_view.name }}{% elif active_filter %}{{ suggested_name }}{% else %}all events{% endif %}"><span class="event-status__view-prefix">view</span>
+    {% if active_filter %}{% if current_saved_view %}<span class="event-status__view-name">{{ current_saved_view.name }}</span>{% endif %}<span class="event-status__filters">{% for link in status_links %}<a href="{{ link.url }}" class="event-status__filter{% if link.colored %} event-type-color{% endif %}" style="{{ link.style }}" title="{{ link.title }}" data-turbo-frame="main_content" data-turbo-action="advance">{{ link.label }}</a>{% endfor %}</span>{% else %}<span class="event-status__view-label">all events</span>{% endif %}
+  </span>
+  <span class="event-status__item event-status__item--local-time">local <time data-event-feed-target="localClock" datetime="{{ now }}">{{ local_clock }}</time></span>
+  <span class="event-status__item event-status__item--utc-time">utc <time data-event-feed-target="utcClock" datetime="{{ now }}">{{ utc_clock }}</time></span>
+  <span class="event-status__item event-status__item--position" data-event-feed-target="positionStatus">at bottom</span>
+  <button type="button" class="event-status__jump hidden" aria-live="polite" aria-atomic="true" data-event-feed-target="jumpBar" data-action="click->event-feed#jumpToBottom"><span data-event-feed-target="newCount"></span></button>
+  <span class="event-status__item event-status__item--newest">newest <time data-controller="time-formatter" data-time-formatter-mode-value="clock" data-event-feed-target="newestTime" datetime="{% if newest %}{{ newest.occurred_at }}{% endif %}">{% if not newest %}--:--:--{% endif %}</time></span>
+  <span class="event-status__item event-status__item--loaded"><span data-event-feed-target="loadedCount">{{ events|length }}</span> loaded</span>
+</div></div>

@@ -1,2 +1,7 @@
-#!/usr/bin/env ruby
-exec "./bin/rails", "server", *ARGV
+#!/bin/sh
+set -eu
+task_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$task_root"
+export FEEDS_ENV=${FEEDS_ENV:-${TELESINK_ENV:-development}}
+export FEEDS_BIND=${FEEDS_BIND:-${TELESINK_BIND:-127.0.0.1:3000}}
+exec cargo run --manifest-path rust/Cargo.toml --locked --bin feeds -- "$@"

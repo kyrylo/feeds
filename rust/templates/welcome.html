@@ -1,0 +1,10 @@
+<div class="column"><div class="column__header"><h2 class="column__title">welcome to telesink</h2></div>
+<div class="column-data">
+{% if current_user.role == 2 %}
+<p class="column-data__text"><strong>Sinks</strong> are live event streams for your product.</p>
+<p class="column-data__text">You decide what to track and how to organize it. Track virtually anything: signups, payments, renewals — whatever matters to you.</p>
+<p class="column-data__text">Events are sent to your sink from your application via HTTP.</p>
+<div><a href="/sinks/new" class="btn btn--primary" data-turbo-frame="_top">create your first sink</a></div>
+{% else %}
+<p class="column-data__text">No sinks are available for this account.</p>
+{% endif %}</div></div>

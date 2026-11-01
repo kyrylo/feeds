@@ -1,0 +1,1 @@
+{% if more_url %}<turbo-frame id="more_{{ column.id }}" src="{{ more_url }}" loading="lazy"><div class="events__loading">↓ loading older events…</div></turbo-frame>{% else %}<div class="events__end-of-feed">end</div>{% endif %}

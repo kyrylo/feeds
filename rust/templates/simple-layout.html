@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ title }}</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="csrf-token" content="{{ csrf }}">
+  <meta name="referrer" content="same-origin">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=5">
+  <link rel="stylesheet" href="{{ activity_style }}">
+  <script defer src="{{ activity_script }}"></script>
+</head>
+<body{% if page == 'activity.html' %} class="terminal-page"{% endif %}>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="topbar"><div class="topbar-inner">
+    <div class="brand-group"><a class="wordmark" href="/" aria-label="Feeds home"><span aria-hidden="true">[f]</span> feeds</a>{% if activity %}<button class="quiet feeds-toggle" type="button" data-toggle-feeds aria-expanded="false" aria-controls="feeds" aria-label="Choose feed">[feeds]</button><button class="quiet shortcut-help" type="button" data-show-shortcuts aria-label="Keyboard shortcuts"><kbd>?</kbd><span class="shortcut-label"> shortcuts</span></button><span class="shortcut-hints"><kbd>/</kbd> search <kbd>j</kbd><kbd>k</kbd> navigate</span>{% endif %}</div>
+    <nav aria-label="Main navigation">
+      {% if current_user %}<a href="/connect"{% if page == 'connect.html' %} aria-current="page"{% endif %}>connect</a><a href="/settings"{% if page == 'settings.html' %} aria-current="page"{% endif %}>settings</a>{% endif %}
+      {% if current_user %}<form action="/session" method="post"><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="delete"><button class="quiet" type="submit">sign out</button></form>{% endif %}
+    </nav>
+  </div></header>
+  <main id="main-content" class="main{% if page == 'activity.html' %} main--terminal{% elif page in ['auth.html','password.html','settings.html'] %} main--form{% endif %}">
+    {% if page == 'settings.html' %}<a class="back" href="/">← feeds</a><nav class="settings-tabs" aria-label="Account settings"><a href="/settings/nickname/edit"{% if mode == 'nickname' %} aria-current="page"{% endif %}>name</a><a href="/settings/email/edit"{% if mode == 'email' %} aria-current="page"{% endif %}>email</a><a href="/settings/password/edit"{% if mode == 'password' %} aria-current="page"{% endif %}>password</a></nav>{% endif %}
+    {% include page %}
+  </main>
+  <dialog id="shortcuts" aria-labelledby="shortcuts-title"><div class="dialog-heading"><h2 id="shortcuts-title">Keyboard shortcuts</h2><button class="quiet" type="button" data-close-shortcuts aria-label="Close shortcuts">[close]</button></div><dl class="shortcut-list"><dt><kbd>/</kbd></dt><dd>Search feed</dd><dt><kbd>j</kbd> / <kbd>k</kbd></dt><dd>Next / previous event</dd><dt><kbd>Enter</kbd></dt><dd>Expand the focused event</dd><dt><kbd>Esc</kbd></dt><dd>Close details or leave search</dd><dt><kbd>?</kbd></dt><dd>Show this help</dd></dl><p class="muted">Shortcuts are inactive while typing in a field.</p></dialog>
+</body>
+</html>

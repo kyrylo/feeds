@@ -1,0 +1,2 @@
+<a class="back" href="{{ back_url }}">← Latest events</a><div class="page-heading"><h1>Earlier events</h1></div>
+{% if older_url %}<div class="pagination"><a class="button" href="{{ older_url }}">Load earlier events</a></div>{% endif %}<div class="activity-list">{% include 'activity-rows.html' %}</div>

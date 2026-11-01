@@ -1,6 +1,7 @@
-#!/usr/bin/env ruby
-require_relative "../config/boot"
-require "active_support/continuous_integration"
-
-CI = ActiveSupport::ContinuousIntegration
-require_relative "../config/ci.rb"
+#!/bin/sh
+set -eu
+task_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$task_root"
+cargo fmt --manifest-path rust/Cargo.toml -- --check
+cargo clippy --manifest-path rust/Cargo.toml --locked --all-targets --jobs 2 -- -D warnings
+exec bin/rust-test "$@"

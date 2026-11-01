@@ -1,54 +1,47 @@
-service: telesink
-image: telesink
+# Copy to config/deploy.yml for a new installation. Existing installations should
+# merge these settings, keeping their original data volume and SECRET_KEY_BASE.
+service: feeds
+image: <%= ENV.fetch("FEEDS_IMAGE").inspect %>
+minimum_version: 2.12.0
 
 servers:
   web:
-    - telesink.example.com
+    - <%= ENV.fetch("FEEDS_SERVER").inspect %>
 
 proxy:
   ssl: true
-  host: telesink.example.com
+  forward_headers: false
+  host: <%= ENV.fetch("FEEDS_HOST").inspect %>
+  app_port: 3000
+  healthcheck:
+    path: /ready
+    interval: 3
+    timeout: 3
 
 registry:
-  server: localhost:5555
+  server: <%= ENV.fetch("FEEDS_REGISTRY", "ghcr.io").inspect %>
+  username: <%= ENV.fetch("FEEDS_REGISTRY_USERNAME").inspect %>
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: <%= ENV.fetch("FEEDS_ARCH", "amd64").inspect %>
+  dockerfile: Dockerfile
 
 env:
   secret:
     - SECRET_KEY_BASE
-    - POSTGRES_HOST
-    - POSTGRES_PORT
-    - POSTGRES_USER
-    - POSTGRES_PASSWORD
-    - MISSION_CONTROL_USER
-    - MISSION_CONTROL_PASSWORD
-    - TELEBUGS_DSN
-    - TELESINK_ENDPOINT
+    - FEEDS_PASSWORD_HASH
   clear:
-    SOLID_QUEUE_IN_PUMA: true
-
-aliases:
-  console: app exec --interactive --reuse "bin/rails console"
-  shell: app exec --interactive --reuse "bash"
-  logs: app logs -f
-  dbc: app exec --interactive --reuse "bin/rails dbconsole --include-password"
+    FEEDS_BIND: 0.0.0.0:3000
+    DATABASE_URL: sqlite:///data/feeds.sqlite3
+    FEEDS_PUBLIC_URL: <%= "https://#{ENV.fetch('FEEDS_HOST')}".inspect %>
 
 volumes:
-  - "telesink-storage:/rails/storage"
+  - feeds-data:/data
 
-asset_path: /rails/public/assets
+aliases:
+  logs: app logs -f
+  db_check: app exec --reuse "/feeds db check"
 
-builder:
-  arch: amd64
-
-accessories:
-  db:
-    image: postgres:18.2
-    host: telesink.example.com
-    env:
-      secret:
-        - POSTGRES_USER
-        - POSTGRES_PASSWORD
-    files:
-      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
-    directories:
-      - telesink_pgdata:/var/lib/postgresql
+retain_containers: 3

@@ -1,0 +1,42 @@
+[
+  {
+    "event_type": "payment",
+    "text": " hello\nworld ",
+    "properties": {
+      "amount": 125.5,
+      "absent": null,
+      "flag": false,
+      "nested": {
+        "list": [
+          1,
+          "two"
+        ]
+      }
+    },
+    "id": 1,
+    "search_text": "payment hello world flag false absent amount 125.5 nested {\"list\":[1,\"two\"]}"
+  },
+  {
+    "event_type": "quote",
+    "text": "Unicode 日本語 café",
+    "properties": {
+      "link": "<tag>&value",
+      "quoted": "\"\\",
+      "empty": "",
+      "array": [
+        true,
+        null,
+        " x "
+      ]
+    },
+    "id": 2,
+    "search_text": "quote Unicode 日本語 café link <tag>&value array [true,null,\" x \"] empty quoted \"\\"
+  },
+  {
+    "event_type": "event",
+    "text": "spaces inside",
+    "properties": {},
+    "id": 3,
+    "search_text": "event spaces inside"
+  }
+]

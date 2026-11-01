@@ -1,0 +1,16 @@
+<div class="connections-page">
+  <a class="back" href="/">← Feeds</a>
+  <div class="page-heading"><div><h1>Connect</h1><p class="muted">Each feed has its own event URL.</p></div><a class="button button--primary" href="/feeds/new">+ New feed</a></div>
+  {% if feeds %}
+  <ul class="connections" aria-label="Feed connections">
+    {% for feed in feeds %}<li>
+      <a class="connection-name" href="/feeds/{{ feed.id }}">#{{ feed.name }}</a>
+      <input type="password" readonly id="feed-url-{{ feed.id }}" value="{{ feed.endpoint }}" aria-label="{{ feed.name }} event URL" autocomplete="off">
+      <button class="quiet" type="button" data-copy-input="feed-url-{{ feed.id }}">Copy URL</button>
+      <a href="/feeds/{{ feed.id }}/edit">Edit</a>
+      <form action="/feeds/{{ feed.id }}" method="post" data-confirm="Delete {{ feed.name }} and all its events? This cannot be undone."><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="delete"><button class="quiet danger" type="submit" aria-label="Delete {{ feed.name }}">Delete</button></form>
+    </li>{% endfor %}
+  </ul>
+  <p class="field-hint">Keep these URLs private. Open Edit for a sample request or to replace a URL.</p>
+  {% else %}<p class="muted">No feeds yet. Create one to get its event URL.</p>{% endif %}
+</div>

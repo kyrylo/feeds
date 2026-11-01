@@ -1,0 +1,2 @@
+<turbo-stream action="prepend" target="events_feed"><template>{% for event in events %}{% include 'feed-row.html' %}{% endfor %}</template></turbo-stream>
+<turbo-stream action="replace" target="events_older_boundary"><template>{% include 'older-loader.html' %}</template></turbo-stream>

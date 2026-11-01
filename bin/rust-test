@@ -1,0 +1,6 @@
+#!/bin/sh
+set -eu
+task_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$task_root"
+export RUST_TEST_THREADS=2
+exec cargo test --manifest-path rust/Cargo.toml --locked --jobs 2 "$@"

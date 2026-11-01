@@ -40,3 +40,15 @@
 /config/deploy.yml
 .DS_Store
 config/deploy.demo.yml
+
+# Rust build output; keep Cargo.lock for reproducible application builds.
+/rust/target/
+
+# Public configuration templates, private local credentials.
+!/.env.example
+/.kamal/secrets*
+!/.kamal/secrets.example
+
+# Python helper caches.
+__pycache__/
+*.py[cod]

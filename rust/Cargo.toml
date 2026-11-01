@@ -1,0 +1,71 @@
+[package]
+name = "feeds"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.96"
+description = "A small, self-hosted event log for your projects. Rust, SQLite, one owner."
+authors = ["Kyrylo Silin"]
+homepage = "https://kyrylo.org/feeds/"
+repository = "https://github.com/kyrylo/feeds"
+license = "MIT"
+publish = false
+
+[features]
+default = []
+postgres-import = ["sqlx/postgres", "sqlx/tls-rustls-ring"]
+
+[[bin]]
+name = "feeds-import-postgres"
+path = "src/bin/import_postgres.rs"
+required-features = ["postgres-import"]
+
+[dependencies]
+libsqlite3-sys = { version = "=0.37.0", features = ["bundled"] }
+axum = { version = "=0.8.9", default-features = false, features = ["http1", "json", "query", "form", "tokio", "ws"] }
+base64 = "=0.23.1"
+bcrypt = "=0.19.3"
+chrono = { version = "=0.4.44", features = ["serde"] }
+chrono-tz = "=0.10.4"
+futures-util = { version = "=0.3.32", default-features = false, features = ["sink"] }
+hmac = "=0.13.0"
+lettre = { version = "=0.11.23", default-features = false, features = ["builder", "smtp-transport", "tokio1-rustls-tls"] }
+minijinja = { version = "=2.24.0", features = ["loader", "json"] }
+pbkdf2 = "=0.13.0"
+percent-encoding = "=2.3.2"
+rand = "=0.9.4"
+regex = "=1.13.1"
+serde = { version = "=1.0.228", features = ["derive"] }
+serde_json = { version = "=1.0.150", features = ["preserve_order", "float_roundtrip", "arbitrary_precision"] }
+serde_urlencoded = "=0.7.1"
+sha1 = "=0.11.0"
+sha2 = "=0.11.0"
+sqlx = { version = "=0.9.0", default-features = false, features = ["runtime-tokio", "sqlite", "chrono", "json", "derive"] }
+tokio = { version = "=1.53.1", features = ["macros", "rt-multi-thread", "net", "signal", "sync", "time", "fs", "io-util"] }
+tower-http = { version = "=0.6.11", features = ["fs", "cors"] }
+unicode-normalization = "=0.1.26"
+
+[dev-dependencies]
+tower = { version = "=0.5.3", features = ["util"] }
+http-body-util = "=0.1.3"
+tokio-tungstenite = { version = "=0.29.0", default-features = false, features = ["connect", "handshake"] }
+
+[build-dependencies]
+sha2 = "=0.11.0"
+serde_json = "=1.0.150"
+
+[profile.dev]
+debug = 0
+
+[profile.test]
+debug = 0
+
+[profile.release]
+strip = true
+lto = "thin"
+codegen-units = 1
+
+[profile.test.package.bcrypt]
+opt-level = 3
+
+[profile.test.package.blowfish]
+opt-level = 3

@@ -1,71 +1,51 @@
 # syntax=docker/dockerfile:1
-# check=error=true
+ARG RUST_VERSION=1.96.0
+FROM rust:${RUST_VERSION}-bookworm AS build
+ARG TARGETARCH
+WORKDIR /source
+COPY rust/Cargo.toml rust/Cargo.lock rust/build.rs ./rust/
+COPY rust/src ./rust/src
+COPY rust/schema ./rust/schema
+COPY rust/data ./rust/data
+COPY rust/templates ./rust/templates
+COPY rust/static ./rust/static
+COPY rust/vendor ./rust/vendor
+COPY app/assets/stylesheets ./app/assets/stylesheets
+COPY app/javascript ./app/javascript
+COPY vendor/javascript ./vendor/javascript
+COPY public ./public
+RUN --mount=type=cache,id=telesink-rust-registry,target=/usr/local/cargo/registry \
+    --mount=type=cache,id=telesink-rust-target-${TARGETARCH},sharing=locked,target=/source/rust/target \
+    CARGO_INCREMENTAL=0 cargo build --manifest-path rust/Cargo.toml --locked --release --jobs 2 --bin feeds && \
+    install -D rust/target/release/feeds /out/feeds && install -d -m 0750 /out/data && ldd /out/feeds
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t telesink .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name telesink telesink
+FROM build AS migration-build
+RUN --mount=type=cache,id=telesink-rust-registry,target=/usr/local/cargo/registry \
+    --mount=type=cache,id=telesink-rust-target-${TARGETARCH},sharing=locked,target=/source/rust/target \
+    CARGO_INCREMENTAL=0 cargo build --manifest-path rust/Cargo.toml --locked --release --jobs 2 --features postgres-import --bin feeds-import-postgres && \
+    install -D rust/target/release/feeds-import-postgres /out/feeds-import-postgres
 
-# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
+FROM gcr.io/distroless/cc-debian12:nonroot AS migration
+COPY --from=migration-build /out/feeds-import-postgres /feeds-import-postgres
+COPY --chown=65532:65532 --from=build /out/data /data
+COPY LICENSE /usr/share/licenses/feeds/LICENSE
+USER 65532:65532
+VOLUME ["/data"]
+ENTRYPOINT ["/feeds-import-postgres"]
+CMD ["--help"]
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=4.0.5
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
-
-# Rails app lives here
-WORKDIR /rails
-
-# Install base packages
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
-    ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Set production environment variables and enable jemalloc for reduced memory usage and latency.
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development" \
-    LD_PRELOAD="/usr/local/lib/libjemalloc.so"
-
-# Throw-away build stage to reduce size of final image
-FROM base AS build
-
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libpq-dev libyaml-dev pkg-config && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Install application gems
-COPY vendor/* ./vendor/
-COPY Gemfile Gemfile.lock .ruby-version ./
-
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
-
-# Copy application code
-COPY . .
-
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-
-
-# Final stage for app image
-FROM base
-
-# Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash
-USER 1000:1000
-
-# Copy built artifacts: gems, application
-COPY --chown=rails:rails --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --chown=rails:rails --from=build /rails /rails
-
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
-
-# Start server via Thruster by default, this can be overwritten at runtime
-EXPOSE 80
-CMD ["./bin/thrust", "./bin/rails", "server"]
+FROM gcr.io/distroless/cc-debian12:nonroot AS runtime
+COPY --from=build /out/feeds /feeds
+COPY --chown=65532:65532 --from=build /out/data /data
+COPY LICENSE /usr/share/licenses/feeds/LICENSE
+COPY rust/vendor/hotwired/*-LICENSE /usr/share/licenses/feeds/
+USER 65532:65532
+# Keep the legacy default overridable; explicit FEEDS_BIND takes precedence.
+ENV TELESINK_BIND=0.0.0.0:3000
+ENV DATABASE_URL=sqlite:///data/feeds.sqlite3
+VOLUME ["/data"]
+EXPOSE 3000
+STOPSIGNAL SIGTERM
+HEALTHCHECK --interval=15s --timeout=5s --start-period=20s CMD ["/feeds", "healthcheck"]
+ENTRYPOINT ["/feeds"]
+CMD ["serve"]

@@ -1,0 +1,16 @@
+<div class="column"><div class="column__header"><h1 class="column__title">{{ title }}</h1></div><div class="column-data">
+<form action="{{ action }}" method="post" class="form" data-turbo="false">
+  <input type="hidden" name="authenticity_token" value="{{ csrf }}" autocomplete="off">
+  {% if sink %}<input type="hidden" name="_method" value="patch" autocomplete="off">{% endif %}
+  <div class="form-field"><label for="sink_name" class="form-field__label">name</label><input type="text" name="sink[name]" id="sink_name" value="{{ form_name }}" required autofocus class="text-field"></div>
+  {% if folders %}<div class="form-field"><label for="sink_folder_id" class="form-field__label">folder</label><select name="sink[folder_id]" id="sink_folder_id" class="text-field"><option value="">none</option>{% for folder in folders %}<option value="{{ folder[0] }}"{% if form_folder_id == folder[0] %} selected{% endif %}>{{ folder[1] }}</option>{% endfor %}</select></div>{% endif %}
+  {% if alert %}<div class="banner banner--danger">{{ alert }}</div>{% endif %}{% if notice %}<div class="banner banner--success">{{ notice }}</div>{% endif %}{% if error %}<div class="banner banner--danger">{{ error }}</div>{% endif %}
+  <div><button type="submit" class="btn btn--primary">{% if sink %}update{% else %}create{% endif %} sink</button></div>
+</form>
+{% if sink %}<div class="divider"></div><details><summary class="link">more</summary><div class="form">
+  <div class="form-field"><label for="endpoint" class="form-field__label">endpoint</label><input type="text" id="endpoint" value="{{ endpoint }}" readonly class="text-field" onclick="this.select()"></div>
+  <div><button type="button" class="btn" data-controller="copy-to-clipboard" data-action="copy-to-clipboard#copy" data-copy-to-clipboard-content-value="{{ endpoint }}">copy url</button></div>
+  <div class="divider"></div><form action="/sinks/{{ sink.id }}" method="post" data-turbo-frame="_top" data-turbo-confirm="delete '{{ sink.name }}' and all its events? this cannot be undone."><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="delete"><button type="submit" class="btn btn--danger">delete sink</button></form>
+</div></details>{% endif %}
+</div></div>
+{% if sink %}{% include 'event-types.html' %}{% endif %}

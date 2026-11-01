@@ -1,0 +1,15 @@
+<div class="event-detail"><div class="event-detail__meta"><span class="event-detail__timestamps">
+  <span class="event-detail__timestamp">local <time data-controller="time-formatter" data-time-formatter-mode-value="datetime" datetime="{{ event.occurred_at }}" title="{{ event.occurred_at }}">{{ event.local_time }}</time></span>
+  <span class="event-detail__timestamp">utc <time data-controller="time-formatter" data-time-formatter-mode-value="utc-datetime" datetime="{{ event.occurred_at }}" title="{{ event.occurred_at }}">{{ event.utc_time }}</time></span>
+</span>{% if detail_frame %}<a href="/events/{{ event.id }}" data-turbo-frame="_top" class="event-detail__permalink link link--subtle" title="permalink">#{{ event.id }}</a>{% else %}<span class="event-detail__permalink">#{{ event.id }}</span>{% endif %}</div>
+{% if event.property_rows %}<div class="event-properties"><div class="event-properties__list">{% for property in event.property_rows %}
+<div class="event-properties__item{% if property.current %} event-properties__item--current{% endif %}">
+  <a href="{{ property.exists_url }}" class="event-properties__item-key" title="filter by events with {{ property.key }}" data-turbo-frame="main_content" data-turbo-action="advance">{{ property.key }}</a><span class="event-properties__item-value">
+  {% if property.filterable %}<span class="event-properties__value-actions"><a href="{{ property.eq_url }}" class="event-properties__value-link" title="filter by {{ property.key }}={{ property.scalar }}" data-turbo-frame="main_content" data-turbo-action="advance">{{ property.action_label }}</a>
+    {% if property.numeric %}<span class="event-properties__operators"><a href="{{ property.lt_url }}" class="event-properties__operator" title="filter by {{ property.key }} &lt; {{ property.numeric }}" data-turbo-frame="main_content" data-turbo-action="advance">below</a><a href="{{ property.gt_url }}" class="event-properties__operator" title="filter by {{ property.key }} &gt; {{ property.numeric }}" data-turbo-frame="main_content" data-turbo-action="advance">above</a></span>{% endif %}
+    <button type="button" class="event-properties__copy" title="copy value" data-controller="copy-to-clipboard" data-action="copy-to-clipboard#copy" data-copy-to-clipboard-content-value="{{ property.scalar }}">copy</button>
+  </span>{% if property.long %}<span class="event-properties__full-value">{{ property.full }}</span>{% endif %}
+  {% elif property.long %}<span class="property-value" data-controller="property-value"><span class="property-value__teaser" aria-hidden="false" data-property-value-target="teaser">{{ property.teaser }}</span><button type="button" class="event-properties__toggle link" aria-expanded="false" data-property-value-target="toggle" data-action="click->property-value#toggle">show more</button><span class="property-value__full hidden" aria-hidden="true" data-property-value-target="full">{{ property.full }}</span></span>
+  {% else %}{{ property.full }}{% endif %}</span>
+</div>{% endfor %}</div></div>{% else %}<p class="event-properties__empty">no properties</p>{% endif %}
+</div>

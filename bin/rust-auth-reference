@@ -1,0 +1,8 @@
+#!/bin/sh
+# Native outputs must remain readable by the unchanged Rails application.
+set -eu
+task_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$task_root"
+mkdir -p tmp/rust-port
+cargo run --manifest-path rust/Cargo.toml --locked --jobs 2 --example export_auth_contracts > tmp/rust-port/native-auth.json
+exec bin/rails-reference runner --skip-executor rust/reference/verify_native_auth.rb

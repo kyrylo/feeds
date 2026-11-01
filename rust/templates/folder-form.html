@@ -1,0 +1,10 @@
+<div class="column"><div class="column__header"><h1 class="column__title">{{ title }}</h1></div><div class="column-data">
+<form action="{{ action }}" method="post" class="form" data-turbo="false">
+  <input type="hidden" name="authenticity_token" value="{{ csrf }}" autocomplete="off">
+  {% if folder %}<input type="hidden" name="_method" value="patch" autocomplete="off">{% endif %}
+  <div class="form-field"><label for="folder_name" class="form-field__label">name</label><input type="text" name="folder[name]" id="folder_name" value="{{ form_name }}" required autofocus class="text-field"></div>
+  {% if alert %}<div class="banner banner--danger">{{ alert }}</div>{% endif %}{% if notice %}<div class="banner banner--success">{{ notice }}</div>{% endif %}{% if error %}<div class="banner banner--danger">{{ error }}</div>{% endif %}
+  <div><button type="submit" class="btn btn--primary">{% if folder %}update{% else %}create{% endif %} folder</button></div>
+</form>
+{% if folder %}<div class="divider"></div><details><summary class="link">more</summary><form action="/folders/{{ folder.id }}" method="post" data-turbo-frame="_top" data-turbo-confirm="delete folder '{{ folder.name }}' and un-group all sinks inside it?"><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="delete"><button type="submit" class="btn btn--danger">delete folder</button></form></details>{% endif %}
+</div></div>

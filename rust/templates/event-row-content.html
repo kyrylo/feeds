@@ -1,0 +1,3 @@
+<time data-controller="time-formatter" data-time-formatter-mode-value="clock" class="event-row__time" datetime="{{ event.occurred_at }}" title="{{ event.occurred_at }}"></time>
+<span class="event-row__emoji">{{ event.emoji }}</span><span class="event-row__type event-type-color" style="{{ event.color }}">{{ event.label }}</span><span class="event-row__text">{{ event.text }}</span>
+{% if event.preview %}<span class="event-row__properties">{% for property in event.preview %}{% if not loop.first %}<span class="event-row__property-divider">·</span>{% endif %}<span class="event-row__property"><strong class="event-row__property-key">{{ property.key }}: </strong>{{ property.value }}</span>{% endfor %}</span>{% endif %}

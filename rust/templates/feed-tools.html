@@ -1,0 +1,31 @@
+<nav id="event_filters_{{ variant }}" class="event-filters event-filters--{{ variant }}" aria-label="event filters">
+  <ul id="event_type_filter_list_{{ variant }}" class="list event-filters__list">
+    {% include 'feed-types.html' %}
+  </ul>
+</nav>
+<section class="event-search event-search--{{ variant }}" aria-label="event search">
+  {% if variant == 'desktop' %}<div class="event-search__header"><h3 class="event-search__title">search</h3></div>{% endif %}
+  <form action="/sinks/{{ sink.id }}" method="get" class="event-search__form" data-turbo-frame="main_content" data-turbo-action="advance">
+    {% for field in search_fields %}<input type="hidden" name="{{ field[0] }}" value="{{ field[1] }}">{% endfor %}
+    <input type="search" name="q" value="{{ filters.search_query }}" class="event-search__input" placeholder="search" autocomplete="off" aria-label="search events"><input type="submit" value="go" class="event-search__submit">
+  </form>
+</section>
+{% if active_filter or saved_views or variant == 'desktop' %}
+<section class="saved-views saved-views--{{ variant }}"><div class="saved-views__header"><h3 class="saved-views__title">views</h3></div>
+  {% if active_filter and not current_saved_view %}<form action="/sinks/{{ sink.id }}/saved_views" method="post" class="saved-view-form" data-turbo-frame="main_content">
+    <input type="hidden" name="authenticity_token" value="{{ csrf }}">
+    {% for key in ['event_type','event_date','search_query','property_key','property_op','property_value'] %}<input type="hidden" name="saved_view[{{ key }}]" value="{{ filters[key] }}">{% endfor %}
+    {% if month_parameter %}<input type="hidden" name="month" value="{{ month_parameter }}">{% endif %}
+    <input type="text" name="saved_view[name]" value="{{ suggested_name }}" class="text-field saved-view-form__input" maxlength="80" autocomplete="off" aria-label="view name"><input type="submit" value="save" class="saved-view-form__submit">
+  </form>{% endif %}
+  {% if saved_views %}<ul class="list saved-views__list">{% for saved in saved_views %}<li class="saved-views__item{% if saved.current %} saved-views__item--current{% endif %}">
+    <a href="{{ saved.url }}" class="saved-views__link" title="{{ saved.name }} - {{ saved.summary }}"{% if saved.current %} aria-current="page"{% endif %} data-turbo-frame="main_content" data-turbo-action="advance"><span class="saved-views__icon">{% set icon='saved' %}{% include 'icons.html' %}</span><span class="saved-views__name">{{ saved.name }}</span></a>
+    <form action="{{ saved.delete_url }}" method="post" data-turbo-frame="main_content"><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="delete"><button type="submit" class="saved-views__delete" aria-label="delete {{ saved.name }}" title="delete {{ saved.name }}">{% set icon='delete' %}{% include 'icons.html' %}</button></form>
+  </li>{% endfor %}</ul>{% elif variant == 'desktop' %}<p class="saved-views__empty">none</p>{% endif %}
+</section>{% endif %}
+<section class="event-calendar event-calendar--{{ variant }}" aria-label="event calendar"><div class="event-calendar__header"><h3 class="event-calendar__title">calendar</h3></div><div class="event-calendar__body">
+  <div class="event-calendar__month"><a href="{{ calendar.previous }}" class="event-calendar__nav" aria-label="previous month" data-turbo-frame="main_content" data-turbo-action="advance">{% set icon='previous' %}{% include 'icons.html' %}</a><span class="event-calendar__month-label">{{ calendar.label }}</span><a href="{{ calendar.next }}" class="event-calendar__nav" aria-label="next month" data-turbo-frame="main_content" data-turbo-action="advance">{% set icon='next' %}{% include 'icons.html' %}</a></div>
+  <div class="event-calendar__grid">{% for day in ['Su','Mo','Tu','We','Th','Fr','Sa'] %}<span class="event-calendar__weekday">{{ day }}</span>{% endfor %}
+    {% for cell in calendar.cells %}{% if not cell %}<span class="event-calendar__cell"></span>{% elif cell.count > 0 %}<a href="{{ cell.url }}" class="event-calendar__day{% if cell.selected %} event-calendar__day--selected{% endif %}" title="{{ cell.count }} event{% if cell.count != 1 %}s{% endif %} on {{ cell.date }}"{% if cell.selected %} aria-current="date"{% endif %} data-turbo-frame="main_content" data-turbo-action="advance">{{ cell.day }}</a>{% else %}<span class="event-calendar__day event-calendar__day--muted{% if cell.selected %} event-calendar__day--selected{% endif %}" title="no events on {{ cell.date }}">{{ cell.day }}</span>{% endif %}{% endfor %}
+  </div></div>
+</section>

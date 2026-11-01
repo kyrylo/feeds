@@ -1,0 +1,5 @@
+<div class="column"><turbo-frame id="column_{{ column.id }}" data-controller="column" data-column-column-id-value="{{ column.id }}" data-column-sink-id-value="{{ column.sink_id }}" data-column-cutoff-value="">
+<div class="column__header">{% if can_administer %}<span class="column__drag-handle">⋮⋮</span>{% else %}<span></span>{% endif %}<h2 class="column__title">{% if column_search %}🔎 "{{ column_search }}"{% else %}{{ column.name }}{% endif %}</h2>{% if can_administer %}<a href="/sinks/{{ column.sink_id }}/columns/{{ column.id }}/edit" data-turbo-frame="column_{{ column.id }}" class="link link--subtle font-normal" title="edit">{% set icon='edit' %}{% include 'icons.html' %}</a>{% else %}<span></span>{% endif %}</div>
+<div id="events_list_{{ column.id }}" class="events-list" data-column-target="list">{% include 'column-batch.html' %}</div>
+{% include 'column-more.html' %}
+</turbo-frame></div>

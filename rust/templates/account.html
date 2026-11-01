@@ -1,0 +1,10 @@
+<div class="sidebar-account">
+  <span class="truncate">{% if not demo %}<a href="/settings/nickname/edit" class="link">{% endif %}{{ current_user.nickname }}{% if not demo %}</a>{% endif %}</span>
+  {% if not demo %}
+  <form action="/session" method="post" data-turbo-confirm="log out?">
+    <input type="hidden" name="authenticity_token" value="{{ csrf }}" autocomplete="off">
+    <input type="hidden" name="_method" value="delete" autocomplete="off">
+    <button type="submit" class="link link--subtle whitespace-nowrap text-base">log out</button>
+  </form>
+  {% endif %}
+</div>

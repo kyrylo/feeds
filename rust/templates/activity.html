@@ -1,0 +1,29 @@
+<section id="activity"{% if source %} class="single-feed"{% endif %} data-updates-url="{{ updates_url }}" data-cursor="{{ cursor }}" data-seen="{{ seen }}" data-seen-token="{{ seen_token }}">
+  <aside class="feed-sidebar" id="feeds" aria-label="Feeds">
+    <nav class="feed-links" aria-label="Feeds">
+      {% for tab in tabs %}<div class="feed-link-row"><a class="activity-tab" href="{{ tab.url }}" data-tab-id="{{ tab.id }}"{% if tab.source_id %} data-source-id="{{ tab.source_id }}"{% endif %}{% if tab.current %} aria-current="page"{% endif %}><span class="feed-prefix" aria-hidden="true">#</span><span class="activity-tab__name">{{ tab.name }}</span><span class="activity-tab__count" data-unread="{{ tab.unread }}" aria-label="{{ tab.unread }} unread events"{% if tab.unread == 0 %} hidden{% endif %}>{{ tab.unread_label }}</span></a>{% if tab.current %}<a class="feed-edit" href="/feeds/{{ tab.id }}/edit" aria-label="Edit feed">edit</a>{% endif %}</div>{% endfor %}
+      {% for item in sources %}<a class="activity-tab" href="/?source={{ item.id }}" data-source-id="{{ item.id }}"{% if source == item.id|string and not tab_id %} aria-current="page"{% endif %}><span class="feed-prefix" aria-hidden="true">#</span><span class="activity-tab__name">{{ item.name }}</span></a>{% endfor %}
+    </nav>
+    {% if not sources and not tabs %}<p class="sidebar-empty">No feeds yet.</p>{% endif %}
+    <a class="new-tab" href="/feeds/new">+ new feed</a>
+    {% if searching %}<nav class="feed-search-actions" aria-label="Search actions"><a href="{{ clear_url }}">Clear search</a></nav>{% endif %}
+  </aside>
+  <div class="feed-card">
+    <h1 class="sr-only">{{ feed_name }}</h1>
+    <div class="log-scroll" id="log-scroll" tabindex="0" aria-label="Event feed">
+      <div class="pagination"><a class="button" id="load-older" href="{{ older_url }}"{% if not older_url %} hidden{% endif %}>Load earlier events</a><span id="page-message" class="muted" role="status"></span></div>
+      <div class="catch-up" id="catch-up"{% if new_count == 0 %} hidden{% endif %}>── <span id="new-count">{{ new_count }}</span> new <span id="new-noun">{% if new_count == 1 %}event{% else %}events{% endif %}</span> since your last visit ──</div>
+      <div id="activity-list" class="activity-list" aria-label="Events">{% include 'activity-rows.html' %}</div>
+      <div class="empty" id="activity-empty"{% if events %} hidden{% endif %}>
+        {% if searching %}<p class="system-line">-- no matching events</p><h2>No matching events.</h2><p>Try a different search.</p><a href="{{ clear_url }}">[clear search]</a>
+        {% else %}<p class="system-line">-- connected to feeds</p><h2>No events yet.</h2><p>Send an event to this feed and it will appear here.</p><a href="{% if tab_id %}/feeds/{{ tab_id }}/edit{% else %}/feeds/new{% endif %}">[send your first event]</a>{% endif %}
+      </div>
+      <noscript><p class="muted">Refresh this page to see new events. Open an event to view its full details.</p></noscript>
+    </div>
+  <form action="{{ search_url }}" method="get" class="log-search" id="activity-search" role="search">
+    <input type="hidden" name="_filters" value="1">
+    {% if source %}<input type="hidden" name="source" value="{{ source }}">{% endif %}
+    <div class="search-field"><span class="prompt" aria-hidden="true">/</span><label class="sr-only" for="q">Search feed</label><input type="search" name="q" id="q" value="{{ filters.search_query }}" placeholder="search feed" autocomplete="off"><button type="submit" class="quiet" aria-label="Search">↵</button></div>
+  </form>
+  </div>
+</section>

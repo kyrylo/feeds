@@ -1,0 +1,25 @@
+<div class="column__header column__header--slim">
+  <h1 class="column__title"><span class="truncate">{% if sidebar_mode == 'create' %}create{% elif sidebar_mode == 'edit' %}edit what?{% else %}sinks{% endif %}</span></h1>
+  {% if can_administer %}<span class="sink-actions">
+    {% if current_user.current_sink_id %}<a href="/sinks/{{ current_user.current_sink_id }}/edit" class="link link--subtle" title="edit">{% set icon='edit' %}{% include 'icons.html' %}</a>{% endif %}
+    <a href="/sinks/new" data-turbo-frame="_top" class="link link--subtle" title="create">{% set icon='add' %}{% include 'icons.html' %}</a>
+    <a href="/folders/new" data-turbo-frame="_top" class="link link--subtle" title="create folder">{% set icon='folder' %}{% include 'icons.html' %}</a>
+  </span>{% endif %}
+</div>
+{% if sidebar_mode == 'create' %}<nav><ul class="list sidebar-list"><li class="sidebar-list__item{% if not creating_folder %} sidebar-list__item--current{% endif %}">{% if creating_folder %}<a href="/sinks/new" class="link">sink</a>{% else %}sink{% endif %}</li></ul></nav>
+{% elif navigation %}
+<ul class="list sidebar-list sidebar-list--striped">
+  {% for source in navigation %}
+  {% if source.folder %}
+  <li id="list_item_folder_{{ source.id }}" class="sidebar-list__folder"><span class="sidebar-list__folder-icon">{% set icon='folder' %}{% include 'icons.html' %}</span><span class="sidebar-list__folder-name">{{ source.name }}</span>
+    {% if can_administer %}<a href="/folders/{{ source.id }}/edit" class="sidebar-list__folder-action link link--subtle" title="edit folder">{% set icon='edit' %}{% include 'icons.html' %}</a>{% endif %}
+  </li>
+  {% else %}
+  <li id="list_item_sink_{{ source.id }}" class="sidebar-list__item sidebar-list__item--linkable{% if source.in_folder %} sidebar-list__item--in-folder{% endif %}{% if source.current %} sidebar-list__item--current{% elif source.unread > 0 %} sidebar-list__item--has-new-events{% endif %}">
+    {% if source.current %}<span class="sidebar-list__row-current"><span class="sidebar-list__prefix">#</span><span class="sidebar-list__name">{{ source.name }}</span></span>
+    {% else %}<a href="/sinks/{{ source.id }}{% if sidebar_mode == 'edit' %}/edit{% endif %}" title="{{ source.name }}" class="sidebar-list__row-link link" data-turbo-frame="main_content" data-turbo-action="advance" data-turbo-prefetch="false" data-sink-sidebar-link="true"><span class="sidebar-list__prefix">#</span><span class="sidebar-list__name">{{ source.name }}</span>{% if source.unread > 0 %}<span class="sidebar-list__unread">{{ source.unread }}</span>{% endif %}</a>{% endif %}
+  </li>
+  {% endif %}
+  {% endfor %}
+</ul>
+{% else %}<div class="column-data"><p class="column-data__text italic">no sinks yet</p></div>{% endif %}

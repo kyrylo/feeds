@@ -1,0 +1,230 @@
+{
+  "sink_id": 452418753,
+  "user_id": 694206277,
+  "jobs": [
+    {
+      "id": 1,
+      "queue_name": "events",
+      "class_name": "ProcessEventJob",
+      "arguments": {
+        "job_class": "ProcessEventJob",
+        "job_id": "507369e6-751d-4bee-8612-f3a1efb37233",
+        "provider_job_id": null,
+        "queue_name": "events",
+        "priority": null,
+        "arguments": [
+          {
+            "_aj_globalid": "gid://telesink/Sink/452418753"
+          },
+          {
+            "text": "Accepted before cutover",
+            "event": "payment",
+            "properties": {
+              "amount": 125,
+              "absent": null,
+              "nested": {
+                "list": [
+                  1,
+                  "two"
+                ],
+                "_aj_hash_with_indifferent_access": true
+              },
+              "_aj_hash_with_indifferent_access": true
+            },
+            "sdk": {
+              "name": "reference",
+              "version": "1.0",
+              "_aj_hash_with_indifferent_access": true
+            },
+            "_aj_hash_with_indifferent_access": true
+          }
+        ],
+        "executions": 0,
+        "exception_executions": {},
+        "locale": "en",
+        "timezone": "UTC",
+        "enqueued_at": "2026-10-18T03:42:56.371942000Z",
+        "scheduled_at": "2026-10-18T03:42:56.371544000Z"
+      },
+      "priority": 0,
+      "active_job_id": "507369e6-751d-4bee-8612-f3a1efb37233",
+      "scheduled_at": "2026-10-18 03:42:56 UTC",
+      "finished_at": null,
+      "concurrency_key": null,
+      "created_at": "2026-10-18 03:42:56 UTC",
+      "updated_at": "2026-10-18 03:42:56 UTC"
+    },
+    {
+      "id": 2,
+      "queue_name": "events",
+      "class_name": "ProcessEventJob",
+      "arguments": {
+        "job_class": "ProcessEventJob",
+        "job_id": "5a6244a4-8a5a-47cf-a5b6-810706e218cc",
+        "provider_job_id": null,
+        "queue_name": "events",
+        "priority": null,
+        "arguments": [
+          {
+            "_aj_globalid": "gid://telesink/Sink/452418753"
+          },
+          {
+            "text": "Retry with a key",
+            "idempotency_key": "reference-key",
+            "occurred_at": "2026-10-18T01:02:03.456Z",
+            "_aj_hash_with_indifferent_access": true
+          }
+        ],
+        "executions": 0,
+        "exception_executions": {},
+        "locale": "en",
+        "timezone": "UTC",
+        "enqueued_at": "2026-10-18T03:42:56.428118000Z",
+        "scheduled_at": "2026-10-18T03:42:56.428022000Z"
+      },
+      "priority": 0,
+      "active_job_id": "5a6244a4-8a5a-47cf-a5b6-810706e218cc",
+      "scheduled_at": "2026-10-18 03:42:56 UTC",
+      "finished_at": null,
+      "concurrency_key": null,
+      "created_at": "2026-10-18 03:42:56 UTC",
+      "updated_at": "2026-10-18 03:42:56 UTC"
+    },
+    {
+      "id": 3,
+      "queue_name": "events",
+      "class_name": "ProcessEventJob",
+      "arguments": {
+        "job_class": "ProcessEventJob",
+        "job_id": "942e512f-ec39-44a7-a8b2-4ddf2ba98c26",
+        "provider_job_id": null,
+        "queue_name": "events",
+        "priority": null,
+        "arguments": [
+          {
+            "_aj_globalid": "gid://telesink/Sink/452418753"
+          },
+          {
+            "text": "Future event",
+            "_aj_hash_with_indifferent_access": true
+          }
+        ],
+        "executions": 0,
+        "exception_executions": {},
+        "locale": "en",
+        "timezone": "UTC",
+        "enqueued_at": "2026-10-18T03:42:56.434757000Z",
+        "scheduled_at": "2026-10-18T04:42:56.434513807Z"
+      },
+      "priority": 0,
+      "active_job_id": "942e512f-ec39-44a7-a8b2-4ddf2ba98c26",
+      "scheduled_at": "2026-10-18 04:42:56 UTC",
+      "finished_at": null,
+      "concurrency_key": null,
+      "created_at": "2026-10-18 03:42:56 UTC",
+      "updated_at": "2026-10-18 03:42:56 UTC"
+    },
+    {
+      "id": 4,
+      "queue_name": "default",
+      "class_name": "ActionMailer::MailDeliveryJob",
+      "arguments": {
+        "job_class": "ActionMailer::MailDeliveryJob",
+        "job_id": "86277c13-2c76-49f4-986f-31d61260ef88",
+        "provider_job_id": null,
+        "queue_name": "default",
+        "priority": null,
+        "arguments": [
+          "PasswordsMailer",
+          "reset",
+          "deliver_now",
+          {
+            "args": [
+              {
+                "_aj_globalid": "gid://telesink/User/694206277"
+              }
+            ],
+            "_aj_ruby2_keywords": [
+              "args"
+            ]
+          }
+        ],
+        "executions": 0,
+        "exception_executions": {},
+        "locale": "en",
+        "timezone": "UTC",
+        "enqueued_at": "2026-10-18T03:42:56.534430000Z",
+        "scheduled_at": "2026-10-18T03:42:56.534235000Z"
+      },
+      "priority": 0,
+      "active_job_id": "86277c13-2c76-49f4-986f-31d61260ef88",
+      "scheduled_at": "2026-10-18 03:42:56 UTC",
+      "finished_at": null,
+      "concurrency_key": null,
+      "created_at": "2026-10-18 03:42:56 UTC",
+      "updated_at": "2026-10-18 03:42:56 UTC"
+    },
+    {
+      "id": 5,
+      "queue_name": "default",
+      "class_name": "Turbo::Streams::BroadcastStreamJob",
+      "arguments": {
+        "job_class": "Turbo::Streams::BroadcastStreamJob",
+        "job_id": "6d45004d-4eef-471f-82da-21470df0f0e8",
+        "provider_job_id": null,
+        "queue_name": "default",
+        "priority": null,
+        "arguments": [
+          "user_694206277_sinks",
+          {
+            "content": "<turbo-stream action=\"refresh\"></turbo-stream>",
+            "_aj_ruby2_keywords": [
+              "content"
+            ]
+          }
+        ],
+        "executions": 0,
+        "exception_executions": {},
+        "locale": "en",
+        "timezone": "UTC",
+        "enqueued_at": "2026-10-18T03:42:56.543695000Z",
+        "scheduled_at": "2026-10-18T03:42:56.543554000Z"
+      },
+      "priority": 0,
+      "active_job_id": "6d45004d-4eef-471f-82da-21470df0f0e8",
+      "scheduled_at": "2026-10-18 03:42:56 UTC",
+      "finished_at": null,
+      "concurrency_key": null,
+      "created_at": "2026-10-18 03:42:56 UTC",
+      "updated_at": "2026-10-18 03:42:56 UTC"
+    },
+    {
+      "id": 6,
+      "queue_name": "solid_queue_recurring",
+      "class_name": "SolidQueue::RecurringJob",
+      "arguments": {
+        "job_class": "SolidQueue::RecurringJob",
+        "job_id": "d43f9ede-d070-4165-a419-97a6aea888d4",
+        "provider_job_id": null,
+        "queue_name": "solid_queue_recurring",
+        "priority": null,
+        "arguments": [
+          "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
+        ],
+        "executions": 0,
+        "exception_executions": {},
+        "locale": "en",
+        "timezone": "UTC",
+        "enqueued_at": "2026-10-18T03:42:56.550764000Z",
+        "scheduled_at": "2026-10-18T03:42:56.550717000Z"
+      },
+      "priority": 0,
+      "active_job_id": "d43f9ede-d070-4165-a419-97a6aea888d4",
+      "scheduled_at": "2026-10-18 03:42:56 UTC",
+      "finished_at": null,
+      "concurrency_key": null,
+      "created_at": "2026-10-18 03:42:56 UTC",
+      "updated_at": "2026-10-18 03:42:56 UTC"
+    }
+  ]
+}

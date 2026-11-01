@@ -1,0 +1,23 @@
+<div class="column">
+  <div class="column__header"><h1 class="column__title">{{ title }}</h1></div>
+  <div class="column-data">
+    {% if mode in ['nickname','email','password'] %}
+    <form action="{{ action }}" method="post" class="form"{% if mode in ['nickname','email'] %} data-turbo="false"{% endif %}>
+      <input type="hidden" name="authenticity_token" value="{{ csrf }}" autocomplete="off">
+      <input type="hidden" name="_method" value="patch" autocomplete="off">
+      {% if mode == 'nickname' %}
+      <div class="form-field"><label for="user_nickname" class="form-field__label">nickname</label><input type="text" name="user[nickname]" id="user_nickname" value="{{ current_user.nickname }}" required autocomplete="off" maxlength="72" class="text-field"></div>
+      {% elif mode == 'email' %}
+      <div class="form-field"><label for="user_email_address" class="form-field__label">email</label><input type="email" name="user[email_address]" id="user_email_address" value="{{ current_user.email_address }}" required autocomplete="email" class="text-field"></div>
+      {% elif mode == 'password' %}
+      <div class="form-field"><label for="user_password_challenge" class="form-field__label">current password</label><input type="password" name="user[password_challenge]" id="user_password_challenge" required autocomplete="current-password" class="text-field"></div>
+      <div class="form-field"><label for="user_password" class="form-field__label">new password</label><input type="password" name="user[password]" id="user_password" required autocomplete="new-password" class="text-field"></div>
+      <div class="form-field"><label for="user_password_confirmation" class="form-field__label">confirm new password</label><input type="password" name="user[password_confirmation]" id="user_password_confirmation" required autocomplete="new-password" class="text-field"></div>
+      {% endif %}
+      {% if alert %}<div class="banner banner--danger">{{ alert }}</div>{% endif %}
+      {% if notice %}<div class="banner banner--success">{{ notice }}</div>{% endif %}
+      <div><button type="submit" class="btn btn--primary">update {{ mode }}</button></div>
+    </form>
+    {% endif %}
+  </div>
+</div>

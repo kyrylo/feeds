@@ -5,101 +5,58 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
-  scan_ruby:
+  native:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          bundler-cache: true
+          toolchain: 1.96.0
+          components: rustfmt, clippy
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            rust/target
+          key: rust-${{ runner.os }}-1.96.0-${{ hashFiles('rust/Cargo.lock') }}
+      - name: Formatting, strict lint and compatibility tests
+        run: bin/ci
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
-        run: bin/brakeman --no-pager
-
-      - name: Scan for known security vulnerabilities in gems used
-        run: bin/bundler-audit
-
-  scan_js:
+  migration:
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      - name: Scan for security vulnerabilities in JavaScript dependencies
-        run: bin/importmap audit
-
-  lint:
-    runs-on: ubuntu-latest
-    env:
-      RUBOCOP_CACHE_ROOT: tmp/rubocop
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      - name: Prepare RuboCop cache
-        uses: actions/cache@v5
-        env:
-          DEPENDENCIES_HASH: ${{ hashFiles('.ruby-version', '**/.rubocop.yml', '**/.rubocop_todo.yml', 'Gemfile.lock') }}
-        with:
-          path: ${{ env.RUBOCOP_CACHE_ROOT }}
-          key: rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-${{ github.ref_name == github.event.repository.default_branch && github.run_id || 'default' }}
-          restore-keys: |
-            rubocop-${{ runner.os }}-${{ env.DEPENDENCIES_HASH }}-
-
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
-
-  test:
-    runs-on: ubuntu-latest
-
     services:
       postgres:
-        image: postgres
+        image: postgres:16
         env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: telesink
+          POSTGRES_DB: telesink_rust_test
+          POSTGRES_HOST_AUTH_METHOD: trust
         ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
-
-      # redis:
-      #   image: valkey/valkey:8
-      #   ports:
-      #     - 6379:6379
-      #   options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-
+          - 55438:5432
+        options: --health-cmd="pg_isready -U telesink" --health-interval=5s --health-timeout=5s --health-retries=10
     steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y libpq-dev
-
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          bundler-cache: true
-
-      - name: Run tests
+          toolchain: 1.96.0
+          components: rustfmt, clippy
+      - name: PostgreSQL migration and legacy queue verification
         env:
-          RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432
-          # RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
-          # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test
+          TELESINK_TEST_DATABASE_URL: postgresql://telesink@127.0.0.1:55438/telesink_rust_test
+          RUST_TEST_THREADS: 2
+        run: cargo test --manifest-path rust/Cargo.toml --locked --features postgres-import --jobs 2 --test import_postgres --test queue
+
+  container:
+    needs: [native, migration]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build the native runtime
+        run: docker build --tag feeds-ci .
+      - name: Verify installation, persistent storage, and owner recovery
+        run: bin/test-container feeds-ci

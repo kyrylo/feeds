@@ -1,0 +1,2 @@
+{% if stream_action == 'older' %}<turbo-stream action="append" target="events_list_{{ column.id }}"><template>{% include 'column-batch.html' %}</template></turbo-stream><turbo-stream action="replace" target="more_{{ column.id }}"><template>{% include 'column-more.html' %}</template></turbo-stream>
+{% else %}<turbo-stream action="{{ stream_action }}" target="{% if stream_action == 'append' %}columns{% else %}column_{{ column.id }}{% endif %}"><template>{% include 'column.html' %}</template></turbo-stream>{% endif %}

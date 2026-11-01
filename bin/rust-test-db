@@ -1,0 +1,29 @@
+#!/bin/sh
+# An isolated synthetic database cluster, never the user's ordinary PostgreSQL.
+set -eu
+task_root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+task_dir="$task_root/tmp/rust-port"
+task_data="$task_dir/postgres"
+task_pg_bin=${TELESINK_TEST_PG_BIN:-/usr/local/opt/postgresql@16/bin}
+task_port=55438
+mkdir -p "$task_dir/socket"
+chmod 700 "$task_dir" "$task_dir/socket"
+case "${1:-start}" in
+  start)
+    if [ ! -f "$task_data/PG_VERSION" ]; then
+      "$task_pg_bin/initdb" -D "$task_data" -U telesink --auth-local=trust --auth-host=trust --encoding=UTF8 --locale=C --no-instructions > "$task_dir/initdb.log"
+    fi
+    if ! "$task_pg_bin/pg_ctl" -D "$task_data" status >/dev/null 2>&1; then
+      "$task_pg_bin/pg_ctl" -D "$task_data" -l "$task_dir/postgres.log" -o "-h 127.0.0.1 -p $task_port -k $task_dir/socket -c shared_buffers=32MB -c max_connections=20" -w start
+    fi
+    for task_db in telesink_rust_reference telesink_rust_test; do
+      if ! "$task_pg_bin/psql" -h 127.0.0.1 -p "$task_port" -U telesink -d postgres -Atc "SELECT datname FROM pg_database WHERE datname='$task_db'" | rg -qx "$task_db"; then
+        "$task_pg_bin/createdb" -h 127.0.0.1 -p "$task_port" -U telesink "$task_db"
+      fi
+    done
+    echo "Isolated PostgreSQL ready on 127.0.0.1:$task_port (user telesink)."
+    ;;
+  stop) "$task_pg_bin/pg_ctl" -D "$task_data" -m fast -w stop ;;
+  status) "$task_pg_bin/pg_ctl" -D "$task_data" status ;;
+  *) echo "usage: bin/rust-test-db [start|stop|status]" >&2; exit 2 ;;
+esac

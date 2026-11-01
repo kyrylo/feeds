@@ -1,0 +1,24 @@
+<div class="tab-editor">
+  <a class="back" href="/connect">← Connections</a>
+  <div class="page-heading"><div><h1>{% if tab_id %}Edit feed{% else %}New feed{% endif %}</h1><p class="muted">{% if tab_id %}Rename this feed or manage its event URL.{% else %}Create a feed to get its own event URL.{% endif %}</p></div>{% if tab_id %}<a href="/feeds/{{ tab_id }}">Open feed →</a>{% endif %}</div>
+  {% if error %}<p class="banner banner--danger" role="alert">{{ error }}</p>{% endif %}
+  <form action="{{ save_path }}" method="post" class="tab-form">
+    <input type="hidden" name="authenticity_token" value="{{ csrf }}">{% if tab_id %}<input type="hidden" name="_method" value="patch">{% endif %}
+    <label>Feed name<input name="name" value="{{ name }}" required maxlength="80" placeholder="e.g. payments" autocomplete="off" autofocus></label>
+    <div class="form-actions"><a href="/connect">Cancel</a><button class="button button--primary" type="submit">{% if tab_id %}Save changes{% else %}Create feed{% endif %}</button></div>
+  </form>
+  {% if tab_id %}
+  <section class="feed-connection" aria-label="Connection">
+    <h2>Event URL</h2>
+    <div class="key-row"><input type="password" readonly id="feed-url" value="{{ endpoint }}" aria-label="Event URL" autocomplete="off"><button type="button" class="button" data-copy-input="feed-url">Copy URL</button></div>
+    <p class="field-hint">This URL accepts events for this feed. Keep it private.</p>
+    <details class="sample-request"><summary>Sample request</summary><div class="connection-example"><div class="code-heading"><span>Send an event</span><button type="button" class="quiet" data-copy-target="connection-code">Copy request</button></div><pre><code id="connection-code">{{ snippet }}</code></pre></div><p class="field-hint">Use an <code>Idempotency-Key</code> header to retry safely. Set <code>occurred_at</code> to an ISO 8601 date to send an earlier event.</p></details>
+    <details class="replace-url"><summary>Replace URL</summary><p class="field-hint">The old URL will stop accepting events. Update any application sending to this feed.</p><form action="/feeds/{{ tab_id }}/url" method="post" data-confirm="Replace this feed’s URL? Its current URL will stop working."><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="patch"><button class="button" type="submit">Replace URL</button></form></details>
+  </section>
+  <section class="tab-management" aria-label="Feed order"><h2>Feed order</h2><div class="order-actions">
+    <form action="/feeds/{{ tab_id }}/move" method="post"><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="patch"><input type="hidden" name="direction" value="left"><button class="button"{% if not can_left %} disabled{% endif %}>↑ Move up</button></form>
+    <form action="/feeds/{{ tab_id }}/move" method="post"><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="patch"><input type="hidden" name="direction" value="right"><button class="button"{% if not can_right %} disabled{% endif %}>Move down ↓</button></form>
+  </div></section>
+  <section class="tab-management"><div><h2>Delete feed</h2><p class="muted">Permanently delete this feed and all its events.</p></div><form action="/feeds/{{ tab_id }}" method="post" data-confirm="Delete {{ name }} and all its events? This cannot be undone."><input type="hidden" name="authenticity_token" value="{{ csrf }}"><input type="hidden" name="_method" value="delete"><button class="button button--danger">Delete feed</button></form></section>
+  {% endif %}
+</div>

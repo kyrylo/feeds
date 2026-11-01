@@ -1,0 +1,7 @@
+{% for event in events %}{% if event.day_label %}<div class="day-delimiter" role="separator" aria-label="{{ event.day_label }}"><span class="day-delimiter__label">{{ event.day_label }}</span></div>{% endif %}
+<a href="/events/{{ event.id }}?column_id={{ column.id }}" data-turbo-frame="_top" data-turbo-prefetch="false" class="event-preview-card" title="{{ event.text }}"><div class="event-preview">
+{% if event.emoji %}<div class="event-preview__emoji">{{ event.emoji }}</div>{% endif %}<div class="event-preview__content"><div class="event-preview__header">
+{% if single_type %}<div class="event-preview__body event-preview__body--single-event-type">{% for part in event.text_parts %}{% if part.highlight %}<mark class="event-preview__highlight">{{ part.text }}</mark>{% else %}{{ part.text }}{% endif %}{% endfor %}</div>{% else %}<span class="event-preview__title event-type-color" style="{{ event.color }}">{{ event.label }}</span>{% endif %}
+<time data-controller="time-formatter" class="event-preview__time" datetime="{{ event.occurred_at }}" title="{{ event.occurred_at }}"></time></div>
+{% if not single_type %}<div class="event-preview__body">{% for part in event.text_parts %}{% if part.highlight %}<mark class="event-preview__highlight">{{ part.text }}</mark>{% else %}{{ part.text }}{% endif %}{% endfor %}</div>{% endif %}
+</div></div></a>{% endfor %}

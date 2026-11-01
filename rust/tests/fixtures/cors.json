@@ -1,0 +1,53 @@
+[
+  {
+    "method": "OPTIONS",
+    "path": "/api/v1/sinks/synthetic-no-such-token/events",
+    "requested_method": "POST",
+    "requested_headers": "content-type,idempotency-key",
+    "status": 200,
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-allow-methods": "POST, OPTIONS",
+      "access-control-expose-headers": "",
+      "access-control-max-age": "7200",
+      "access-control-allow-headers": "content-type,idempotency-key"
+    }
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/v1/sinks/synthetic-no-such-token/events",
+    "requested_method": "DELETE",
+    "requested_headers": "content-type",
+    "status": 200,
+    "headers": {}
+  },
+  {
+    "method": "OPTIONS",
+    "path": "/api/v1/sinks/synthetic-no-such-token/events",
+    "requested_method": "POST",
+    "requested_headers": "x-not-allowed",
+    "status": 200,
+    "headers": {}
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sinks/synthetic-no-such-token/events",
+    "requested_method": null,
+    "requested_headers": null,
+    "status": 401,
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-allow-methods": "POST, OPTIONS",
+      "access-control-expose-headers": "",
+      "access-control-max-age": "7200"
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/session/new",
+    "requested_method": null,
+    "requested_headers": null,
+    "status": 200,
+    "headers": {}
+  }
+]

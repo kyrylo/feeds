@@ -1,0 +1,6 @@
+<aside class="column sidebar sidebar--sinks" data-controller="sink-sidebar">
+  {% if not sidebar_mode %}<turbo-cable-stream-source channel="Turbo::StreamsChannel" signed-stream-name="{{ sidebar_stream }}"></turbo-cable-stream-source>{% endif %}
+  <button type="button" class="sidebar__drawer-toggle" aria-controls="sinks" aria-expanded="false" data-action="sink-sidebar#toggleMobileDrawer"><span class="sidebar__drawer-label">sinks</span></button>
+  <div id="sinks" class="sidebar__content">{% include 'sidebar-content.html' %}</div>
+  {% include 'account.html' %}
+</aside>
